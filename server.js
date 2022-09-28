@@ -4,6 +4,7 @@ const path = require("path");
 // path.join(__dirname,)
 const dotenv = require("dotenv");
 const laureatesRoutes = require("./routes/laureates.router.js");
+const nobelsRoutes = require("./routes/nobels.router.js");
 const hbengine = require("express-handlebars");
 dotenv.config();
 
@@ -34,6 +35,11 @@ app.use((req, res, next) =>{
 app.use("/laureates", laureatesRoutes);
 app.use("/api/laureates", (req, res) => {
     res.redirect("/laureates");
+});
+
+app.use("/nobels", nobelsRoutes);
+app.use("/api/nobels", (req, res) => {
+    res.redirect("/nobels");
 });
 
 app.get("/", (req, res) => {

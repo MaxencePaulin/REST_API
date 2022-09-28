@@ -28,7 +28,7 @@ exports.list = (req, res, next) => {
             const err=new Error("Not Found");
             return next(err);
         }
-        return res.status(200).send({ success: 1, per_page: per_page, page: page, nbPage: nbPage, data: data });
+        return res.status(200).send({ success: 1, per_page: per_page, page: page, nbPage: nbPage, nbLaureats: results.length, data: data });
     });
 };
 exports.afficheInfo = (req, res, next) => {
