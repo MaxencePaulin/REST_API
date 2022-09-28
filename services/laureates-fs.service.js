@@ -20,11 +20,14 @@ const lireLaureates = (prizesL) => {
     prizesL.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
-                    laureatesL.push({
-                        id: laureate.id,
-                        firstname: laureate.firstname,
-                        surname: laureate.surname
-                    });
+                    var tmp = laureatesL.find((l) => l.id === laureate.id);
+                    if (!tmp) {
+                        laureatesL.push({
+                            id: laureate.id,
+                            firstname: laureate.firstname,
+                            surname: laureate.surname
+                        });
+                    }
                 });
             } 
     });
