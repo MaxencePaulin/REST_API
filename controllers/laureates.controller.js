@@ -8,9 +8,7 @@ exports.list = (req, res, next) => {
     laureatesService.listerLaureats((error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
-        }
-        console.log("Success");
-        // 200 => OK
+        }      
         var page = parseInt(req.params.page);
         var per_page = 6;
         var nbPage = parseInt(results.length/6)+1;
@@ -28,12 +26,13 @@ exports.list = (req, res, next) => {
             const err=new Error("Not Found");
             return next(err);
         }
+        console.log("Success");
+        // 200 => OK
         return res.status(200).send({ success: 1, per_page: per_page, page: page, nbPage: nbPage, nbLaureats: results.length, data: data });
     });
 };
 exports.afficheInfo = (req, res, next) => {
-    const id = req.params.id;
-    laureatesService.lireIdLaureats(id,(error, results) => {
+    laureatesService.lireIdLaureats(req,(error, results) => {
         if (error) {
             const err = new Error("Id Not Found");
             return next(err);

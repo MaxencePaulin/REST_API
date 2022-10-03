@@ -35,6 +35,7 @@ const lireLaureates = (prizesL) => {
         
 } 
 
+// F1 et F4 ?
 const listerLaureats = (callback) => {
     try {
         const prizesL = lirePrizes();
@@ -47,8 +48,10 @@ const listerLaureats = (callback) => {
     }
 };
 
-const lireIdLaureats = (id, callback) => {
+// F2
+const lireIdLaureats = (req, callback) => {
     try {
+        const id = req.params.id;
         const prizesL = lirePrizes();
         const laureatesL = lireLaureates(prizesL);
         const result = [];
