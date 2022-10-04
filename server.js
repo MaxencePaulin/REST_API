@@ -63,8 +63,7 @@ app.use("*",(req, res, next) => {
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.render("error404.hbs"
-);
+    res.render("error404.hbs");
 });
 
 app.listen(port, ()=>{

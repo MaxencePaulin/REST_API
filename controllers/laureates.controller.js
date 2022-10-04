@@ -1,14 +1,14 @@
 const dotenv = require("dotenv");
 dotenv.config();
 // const datasource = process.env.DATASOURCE;
-const laureatesService = require("../services/laureates-fs.service.js");
+const laureatesService = require("../services/laureates.service.js");
 
 // GET 
 exports.list = (req, res, next) => {
     laureatesService.listerLaureats((error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
-        }      
+        }
         var page = parseInt(req.params.page);
         var per_page = 6;
         var nbPage = parseInt(results.length/6)+1;

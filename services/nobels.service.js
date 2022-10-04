@@ -1,5 +1,20 @@
 const fs = require("fs");
 
+const pagination = (req, results) => {
+    if (!req.query.page || req.query.page < 1) {
+        req.query.page = 1;
+    }
+    if (!req.query.limit || req.query.limit < 1) {
+        req.query.limit = 10;
+    }
+    const page = req.query.page;
+    const limit = req.query.limit;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const resultsPage = results.slice(startIndex, endIndex);
+    return resultsPage;
+}
+
 const lirePrizes = () => {
     try {
         const dataBuffer = fs.readFileSync("prize.json");
@@ -95,8 +110,74 @@ const listerCategoryNobels = (callback) => {
     }
 }
 
+// F7
+// Déterminez quelle catégorie a produit le plus grand nombre de lauréats du prix Nobel.
+const listerCategoryNobelsMax = (callback) => {
+    try {
+        const prizes = lirePrizes();
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.category && prize.laureates) {
+                let tmp = result.find((c) => c.category === prize.category);
+                if (!tmp) {
+                    result.push({
+                        category: prize.category,
+                        nbLaureates: prize.laureates.length
+                    });
+                } else {
+                    tmp.nbLaureates += prize.laureates.length;
+                }
+            }
+        });
+        let max = result[0];
+        result.forEach((r) => {
+            if (r.nbLaureates > max.nbLaureates) {
+                max = r;
+            }
+        });
+        return callback(null, max);
+    }catch (e) {
+        console.log("error listerCategoryNobelsMax");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
+// F8
+// Pour chaque année, indiquez combien de lauréats avaient remporté un prix nobel.
+const listerNombreNobelsParAn = (req, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates) {
+                let tmp = result.find((r) => r.year === prize.year);
+                if (!tmp) {
+                    result.push({
+                        year: prize.year,
+                        nbLaureates: prize.laureates.length
+                    });
+                } else {
+                    tmp.nbLaureates += prize.laureates.length;
+                }
+            }
+        });
+        const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback("No result", null);
+        }
+        return callback(null, finalResult);
+    }catch (e) {
+        console.log("error listerNombreNobelsParAn");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
 module.exports = {
     listerNombreNobels: listerNombreNobels,
     numberMore1Nobel: numberMore1Nobel,
-    listerCategoryNobels: listerCategoryNobels
+    listerCategoryNobels: listerCategoryNobels,
+    listerCategoryNobelsMax: listerCategoryNobelsMax,
+    listerNombreNobelsParAn: listerNombreNobelsParAn
 }

@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 // const datasource = process.env.DATASOURCE;
-const nobelsService = require("../services/nobels-fs.service.js");
+const nobelsService = require("../services/nobels.service.js");
 
 // GET 
 exports.numberNobels = (req, res, next) => {
@@ -27,6 +27,26 @@ exports.byLaureates = (req, res, next) => {
 
 exports.categoryNobels = (req, res) => {
     nobelsService.listerCategoryNobels((error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        return res.status(200).send({ success: 1, data: results});
+    });
+}
+
+exports.NobelsMax = (req, res) => {
+    nobelsService.listerCategoryNobelsMax((error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        return res.status(200).send({ success: 1, data: results});
+    });
+}
+
+exports.parAn = (req, res) => {
+    nobelsService.listerNombreNobelsParAn(req, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
