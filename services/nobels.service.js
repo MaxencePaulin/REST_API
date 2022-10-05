@@ -1,5 +1,5 @@
 const fs = require("fs");
-const {lireLaureates} = require("./laureates.service");
+const { lireLaureates } = require("./laureates.service");
 
 const pagination = (req, results) => {
     if (!req.query.page || req.query.page < 1) {
@@ -143,6 +143,7 @@ const afficheNobelsInfo = (req, callback) => {
     try {
         const id = req.params.id;
         const prizes = lirePrizes();
+        const laureatesL = lireLaureates(prizes);
         const result = [];
         prizes.forEach((prize) => {
             if (prize.laureates) {
@@ -152,22 +153,18 @@ const afficheNobelsInfo = (req, callback) => {
                         if (!tmp) {
                             result.push({
                                 id: laureate.id,
-                                firstname: laureate.firstname,
-                                surname: laureate.surname,
-                                prize: [
+                                name: [
                                     {
-                                        year: prize.year,
-                                        category: prize.category,
-                                        motivation: laureate.motivation
+                                        firstname: laureate.firstname,
+                                        surname: laureate.surname,
+                                        prize: [prize.year+" "+prize.category+" "+laureate.motivation.slice(1, laureate.motivation.length-1)],
                                     }
-                                ]
+                                ],
+                                
                             });
                         } else {
-                            tmp.prize.push({
-                                year: prize.year,
-                                category: prize.category,
-                                motivation: laureate.motivation
-                            });
+                            // push le prize dans result
+                            tmp.name[0].prize.push(prize.year+" "+prize.category+" "+laureate.motivation.slice(1, laureate.motivation.length-1));
                         }
                     }
                 });
@@ -176,7 +173,7 @@ const afficheNobelsInfo = (req, callback) => {
         if (result.length === 0) {
             return callback("No result", null);
         }
-        return callback(null, {totalResult: result.length, result: result});
+        return callback(null, result[0]);
     }catch (e) {
         console.log("error afficheNobelsInfo");
         console.log(e);
