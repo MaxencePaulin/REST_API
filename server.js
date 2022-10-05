@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 // path.join(__dirname,)
 const dotenv = require("dotenv");
 const laureatesRoutes = require("./routes/laureates.router.js");
@@ -10,6 +12,21 @@ dotenv.config();
 
 const port = process.env.PORT;
 const app = express();
+/** Swagger Initialization - START */
+const swaggerOption = {
+    swaggerDefinition: (swaggerJsdoc.Options = {
+        info: {
+            title: "API_REST",
+            description: "API documentation",
+            contact: {
+                name: "Maxence PAULIN",
+            },
+            servers: ["http://localhost:3000/"],
+        },
+    }),
+    apis: ["server.js", "./routes/*.js"],
+};
+const swaggerDocs = swaggerJsdoc(swaggerOption);
 
 app.engine("hbs", hbengine.engine({
     defaultLayout: "main",
@@ -31,6 +48,8 @@ app.use((req, res, next) =>{
         JSON.stringify(req.ip));
     next();
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/laureates", laureatesRoutes);
 app.use("/api/laureates", (req, res) => {
@@ -55,7 +74,7 @@ app.get("/", (req, res) => {
     });
 });
 
-app.all("*",(req, res, next) => {
+app.use("*",(req, res, next) => {
     const err = new Error("Not Found");
     err.status = 404;
     next(err);
@@ -63,6 +82,7 @@ app.all("*",(req, res, next) => {
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
+    console.log(err);
     res.render("error404.hbs");
 });
 

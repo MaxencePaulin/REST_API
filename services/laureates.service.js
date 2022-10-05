@@ -32,7 +32,7 @@ const lirePrizes = () => {
 };
 
 const savePrizes = (prizes) => {
-    const dataJSON = JSON.stringify(prizes);
+    const dataJSON = JSON.stringify({prizes: prizes});
     fs.writeFileSync("prize.json", dataJSON);
 };
 
@@ -149,7 +149,7 @@ const numberMore1Nobel = (req, callback) => {
 const filterLaureats = (req, callback) => {
     try {
         const prizes = lirePrizes();
-        const result = [];
+        var result = [];
         prizes.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
@@ -164,11 +164,54 @@ const filterLaureats = (req, callback) => {
                 });
             } 
         });
+        console.log(result);
         const finalResult = pagination(req, result);
         if (finalResult.length === 0) {
-            return callback("No result", null);
+            return callback("No result or invalid parameter, do"
+                +"filter?firstname=test or filter?surname=test"
+                +" or filter?category=medicine with valid values", null);
         }
         return callback(null, finalResult);
+    }catch (e) {
+        console.log("error");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
+
+// F13
+
+const deleteLaureats = (id, year, category, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const removeLaureate = [];
+        let tot = 0;
+        if (!id || !year || !category) {
+            return callback("You can only delete a laureate by id, year, and category", null);
+        }
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates){
+                prize.laureates.forEach((laureate) => {
+                    if (laureate.id != id || prize.year != year || prize.category != category) {
+                        result.push({
+                            year: prize.year,
+                            category: prize.category,
+                            laureates: [laureate]
+                        });
+                    }else {
+                        removeLaureate.push(laureate);
+                    }
+                    tot++;
+                });
+            }
+        });
+        if (result.length == tot) {
+            return callback("Laureate doesn't exist", null);
+        }
+        savePrizes(result);
+        return callback(null, result);
     }catch (e) {
         console.log("error");
         console.log(e);
@@ -181,5 +224,6 @@ module.exports = {
     lireIdLaureats: lireIdLaureats,
     numberMore1Nobel: numberMore1Nobel,
     lireLaureates: lireLaureates,
-    filterLaureats: filterLaureats
+    filterLaureats: filterLaureats,
+    deleteLaureats: deleteLaureats
 }
