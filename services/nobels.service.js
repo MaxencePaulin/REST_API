@@ -18,7 +18,8 @@ const pagination = (req, results) => {
     }
     const nbPage= Math.ceil(results.length / limit);
     const totalResult = results.length;
-    const resultsPage = {page: page, limit: limit, nbPage: nbPage, totalResult: totalResult, result: result};
+    const resultsPage = {page: page, limit: limit, nbPage: nbPage,
+        totalResult: totalResult, result: result};
     return resultsPage;
 }
 
@@ -157,14 +158,16 @@ const afficheNobelsInfo = (req, callback) => {
                                     {
                                         firstname: laureate.firstname,
                                         surname: laureate.surname,
-                                        prize: [prize.year+" "+prize.category+" "+laureate.motivation.slice(1, laureate.motivation.length-1)],
+                                        prize: [prize.year+" "+prize.category+" "
+                                            +laureate.motivation.slice(1, laureate.motivation.length-1)],
                                     }
                                 ],
                                 
                             });
                         } else {
                             // push le prize dans result
-                            tmp.name[0].prize.push(prize.year+" "+prize.category+" "+laureate.motivation.slice(1, laureate.motivation.length-1));
+                            tmp.name[0].prize.push(prize.year+" "+prize.category+" "
+                                +laureate.motivation.slice(1, laureate.motivation.length-1));
                         }
                     }
                 });
@@ -181,10 +184,93 @@ const afficheNobelsInfo = (req, callback) => {
     }
 }
 
+// F10
+const listerAnneeSansNobel = (req, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const result = [];
+        prizes.forEach((prize) => {
+            if (!prize.laureates) {
+                let tmp = result.find((r) => r === prize.year);
+                if (!tmp) {
+                    let tmp2 = prizes.find((p) => p.year === prize.year && p.laureates);
+                    if (!tmp2) {
+                        result.push(prize.year);
+                    }
+                }
+            }
+        });
+        const finalResult = pagination(req, result);
+        return callback(null, finalResult);
+    }catch (e) {
+        console.log("error listerAnneeSansNobel");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
+// F11
+const listerAnneeNobelAsc = (req, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates) {
+                let tmp = result.find((r) => r.year === prize.year);
+                if (!tmp) {
+                    result.push({
+                        year: prize.year,
+                        nbLaureates: prize.laureates.length
+                    });
+                } else {
+                    tmp.nbLaureates += prize.laureates.length;
+                }
+            }
+        });
+        result.sort((a, b) => a.nbLaureates - b.nbLaureates);
+        const finalResult = pagination(req, result);
+        return callback(null, finalResult);
+    }catch (e) {
+        console.log("error listerAnneeNobelAsc");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
+const listerAnneeNobelDesc = (req, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates) {
+                let tmp = result.find((r) => r.year === prize.year);
+                if (!tmp) {
+                    result.push({
+                        year: prize.year,
+                        nbLaureates: prize.laureates.length
+                    });
+                } else {
+                    tmp.nbLaureates += prize.laureates.length;
+                }
+            }
+        });
+        result.sort((a, b) => b.nbLaureates - a.nbLaureates);
+        const finalResult = pagination(req, result);
+        return callback(null, finalResult);
+    }catch (e) {
+        console.log("error listerAnneeNobelAsc");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
 module.exports = {
     listerNombreNobels: listerNombreNobels,
     listerCategoryNobels: listerCategoryNobels,
     listerCategoryNobelsMax: listerCategoryNobelsMax,
     listerNombreNobelsParAn: listerNombreNobelsParAn,
-    afficheNobelsInfo: afficheNobelsInfo
+    afficheNobelsInfo: afficheNobelsInfo,
+    listerAnneeSansNobel: listerAnneeSansNobel,
+    listerAnneeNobelAsc: listerAnneeNobelAsc,
+    listerAnneeNobelDesc: listerAnneeNobelDesc
 }
