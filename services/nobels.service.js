@@ -229,6 +229,9 @@ const listerAnneeNobelAsc = (req, callback) => {
         });
         result.sort((a, b) => a.nbLaureates - b.nbLaureates);
         const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback("No result", null);
+        }
         return callback(null, finalResult);
     }catch (e) {
         console.log("error listerAnneeNobelAsc");
@@ -256,6 +259,9 @@ const listerAnneeNobelDesc = (req, callback) => {
         });
         result.sort((a, b) => b.nbLaureates - a.nbLaureates);
         const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback("No result", null);
+        }
         return callback(null, finalResult);
     }catch (e) {
         console.log("error listerAnneeNobelAsc");
