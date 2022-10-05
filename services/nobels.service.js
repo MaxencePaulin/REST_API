@@ -143,7 +143,6 @@ const afficheNobelsInfo = (req, callback) => {
     try {
         const id = req.params.id;
         const prizes = lirePrizes();
-        const laureatesL = lireLaureates(prizes);
         const result = [];
         prizes.forEach((prize) => {
             if (prize.laureates) {
@@ -163,6 +162,12 @@ const afficheNobelsInfo = (req, callback) => {
                                     }
                                 ]
                             });
+                        } else {
+                            tmp.prize.push({
+                                year: prize.year,
+                                category: prize.category,
+                                motivation: laureate.motivation
+                            });
                         }
                     }
                 });
@@ -171,7 +176,7 @@ const afficheNobelsInfo = (req, callback) => {
         if (result.length === 0) {
             return callback("No result", null);
         }
-        return callback(null, result);
+        return callback(null, {totalResult: result.length, result: result});
     }catch (e) {
         console.log("error afficheNobelsInfo");
         console.log(e);
