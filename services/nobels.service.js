@@ -55,7 +55,7 @@ const listerNombreNobels = (callback) => {
 }
 
 // F6
-const listerCategoryNobels = (callback) => {
+const listerCategoryNobels = (req, callback) => {
     try {
         const prizes = lirePrizes();
         const result = [];
@@ -67,7 +67,8 @@ const listerCategoryNobels = (callback) => {
                 }
             }
         });
-        return callback(null, result);
+        const finalResult = pagination(req, result);
+        return callback(null, finalResult);
     }catch (e) {
         console.log("error listerCategoryNobels");
         console.log(e);
@@ -108,8 +109,9 @@ const listerCategoryNobelsMax = (callback) => {
     }
 }
 
-// F8
+// F8 && F11
 // Pour chaque année, indiquez combien de lauréats avaient remporté un prix nobel.
+// Possibilité de sort laureates ou -laureates pour trier par ordre ascendant ou descendant
 const listerNombreNobelsParAn = (req, callback) => {
     try {
         const prizes = lirePrizes();
@@ -127,6 +129,11 @@ const listerNombreNobelsParAn = (req, callback) => {
                 }
             }
         });
+        if (req.query.sort === "laureates") {
+            result.sort((a, b) => a.nbLaureates - b.nbLaureates);
+        } else if (req.query.sort === "-laureates") {
+            result.sort((a, b) => b.nbLaureates - a.nbLaureates);
+        }
         const finalResult = pagination(req, result);
         if (finalResult.length === 0) {
             return callback("No result", null);
@@ -201,70 +208,12 @@ const listerAnneeSansNobel = (req, callback) => {
             }
         });
         const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback("No result", null);
+        }
         return callback(null, finalResult);
     }catch (e) {
         console.log("error listerAnneeSansNobel");
-        console.log(e);
-        return callback([], null);
-    }
-}
-
-// F11
-const listerAnneeNobelAsc = (req, callback) => {
-    try {
-        const prizes = lirePrizes();
-        const result = [];
-        prizes.forEach((prize) => {
-            if (prize.laureates) {
-                let tmp = result.find((r) => r.year === prize.year);
-                if (!tmp) {
-                    result.push({
-                        year: prize.year,
-                        nbLaureates: prize.laureates.length
-                    });
-                } else {
-                    tmp.nbLaureates += prize.laureates.length;
-                }
-            }
-        });
-        result.sort((a, b) => a.nbLaureates - b.nbLaureates);
-        const finalResult = pagination(req, result);
-        if (finalResult.length === 0) {
-            return callback("No result", null);
-        }
-        return callback(null, finalResult);
-    }catch (e) {
-        console.log("error listerAnneeNobelAsc");
-        console.log(e);
-        return callback([], null);
-    }
-}
-
-const listerAnneeNobelDesc = (req, callback) => {
-    try {
-        const prizes = lirePrizes();
-        const result = [];
-        prizes.forEach((prize) => {
-            if (prize.laureates) {
-                let tmp = result.find((r) => r.year === prize.year);
-                if (!tmp) {
-                    result.push({
-                        year: prize.year,
-                        nbLaureates: prize.laureates.length
-                    });
-                } else {
-                    tmp.nbLaureates += prize.laureates.length;
-                }
-            }
-        });
-        result.sort((a, b) => b.nbLaureates - a.nbLaureates);
-        const finalResult = pagination(req, result);
-        if (finalResult.length === 0) {
-            return callback("No result", null);
-        }
-        return callback(null, finalResult);
-    }catch (e) {
-        console.log("error listerAnneeNobelAsc");
         console.log(e);
         return callback([], null);
     }
@@ -276,7 +225,5 @@ module.exports = {
     listerCategoryNobelsMax: listerCategoryNobelsMax,
     listerNombreNobelsParAn: listerNombreNobelsParAn,
     afficheNobelsInfo: afficheNobelsInfo,
-    listerAnneeSansNobel: listerAnneeSansNobel,
-    listerAnneeNobelAsc: listerAnneeNobelAsc,
-    listerAnneeNobelDesc: listerAnneeNobelDesc
+    listerAnneeSansNobel: listerAnneeSansNobel
 }

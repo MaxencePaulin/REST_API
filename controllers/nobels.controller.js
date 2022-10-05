@@ -16,7 +16,7 @@ exports.numberNobels = (req, res, next) => {
 };
 
 exports.categoryNobels = (req, res) => {
-    nobelsService.listerCategoryNobels((error, results) => {
+    nobelsService.listerCategoryNobels(req, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
@@ -57,26 +57,6 @@ exports.nobelsInfo = (req, res) => {
 
 exports.noNobels = (req, res) => {
     nobelsService.listerAnneeSansNobel(req, (error, results) => {
-        if (error) {
-            return res.status(400).send({ success: 0, data: error });
-        }
-        console.log("Success");
-        return res.status(200).send({ success: 1, data: results});
-    });
-}
-
-exports.listerYearNobelAsc = (req, res) => {
-    nobelsService.listerAnneeNobelAsc(req, (error, results) => {
-        if (error) {
-            return res.status(400).send({ success: 0, data: error });
-        }
-        console.log("Success");
-        return res.status(200).send({ success: 1, data: results});
-    });
-}
-
-exports.listerYearNobelDesc = (req, res) => {
-    nobelsService.listerAnneeNobelDesc(req, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }

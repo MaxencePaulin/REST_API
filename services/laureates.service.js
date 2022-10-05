@@ -164,7 +164,6 @@ const filterLaureats = (req, callback) => {
                 });
             } 
         });
-        console.log(result);
         const finalResult = pagination(req, result);
         if (finalResult.length === 0) {
             return callback("No result or invalid parameter, do"
@@ -210,10 +209,104 @@ const deleteLaureats = (id, year, category, callback) => {
         if (result.length == tot) {
             return callback("Laureate doesn't exist", null);
         }
-        savePrizes(result);
+//        savePrizes(result);
+        return callback(null, removeLaureate);
+    }catch (e) {
+        console.log("error");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
+const editMotivationLaureats = (motivation, id, year, category, callback) => {
+    try {
+        const prizes = lirePrizes();
+        if (!motivation || !id || !year || !category) {
+            return callback("You can only edit motivation of a laureate by id, year, and category", null);
+        }
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates){
+                prize.laureates.forEach((laureate) => {
+                    if (laureate.id === id && prize.year === year && prize.category === category) {
+                        laureate.motivation = "\""+motivation+"\"";
+                        result.push(laureate);
+                    }
+                });
+            }
+        });
+        if (result.length === 0) {
+            return callback("Laureate doesn't exist", null);
+        }
+//        savePrizes(prizes);
         return callback(null, result);
     }catch (e) {
         console.log("error");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
+const addLaureats = (req, firstname, surname, motivation, share, year, category, callback) => {
+    try {
+        const prizes = lirePrizes();
+        if (!firstname || !surname || !motivation || !year || !category) {
+            return callback("You can only add a laureate with firstname, surname, motivation, year, category minimum", null);
+        }
+        let id = null;
+        let maxId = 0;
+        const result = [];
+        const laureatesL = lireLaureates(prizes);
+        laureatesL.forEach((laureate) => {
+
+        });
+        prizes.forEach((prize) => {
+            if (prize.laureates){
+                prize.laureates.forEach((laureate) => {
+                    if (laureate.firstname === firstname && laureate.surname === surname) {
+                        id = laureate.id;
+                    }
+                    if (laureate.id > maxId) {
+                        maxId = laureate.id;
+                    }
+                    result.push({
+                        year: prize.year,
+                        category: prize.category,
+                        laureates: [laureate]
+                    });
+                });
+                if (prize.year === year && prize.category === category) {
+                    if (id === null) {
+                        result.push({
+                            year: prize.year,
+                            category: prize.category,
+                            laureates: [
+                                {
+                                    id: maxId+1,
+                                    firstname: firstname,
+                                    surname: surname,
+                                    motivation: "\""+motivation+"\"",
+                                    share: share
+                                }
+                            ]
+                        });
+                    }else {
+                        result.push({
+                            id: id,
+                            firstname: firstname,
+                            surname: surname,
+                            motivation: "\""+motivation+"\"",
+                            share: share
+                        });
+                    }
+                }
+            }
+        });
+        const finalResult = pagination(req, result);
+//        savePrizes(result);
+        return callback(null, finalResult);
+    }catch (e){
+        console.log("error addLaureats");
         console.log(e);
         return callback([], null);
     }
@@ -225,5 +318,7 @@ module.exports = {
     numberMore1Nobel: numberMore1Nobel,
     lireLaureates: lireLaureates,
     filterLaureats: filterLaureats,
-    deleteLaureats: deleteLaureats
+    deleteLaureats: deleteLaureats,
+    editMotivationLaureats: editMotivationLaureats,
+    addLaureats: addLaureats
 }
