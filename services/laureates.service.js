@@ -145,9 +145,41 @@ const numberMore1Nobel = (req, callback) => {
     }
 }
 
+// F12
+const filterLaureats = (req, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates){  
+                prize.laureates.forEach((laureate) => {
+                    var tmp = result.find((l) => l.id === laureate.id);
+                    if (!tmp) {
+                        if ((laureate.firstname != null && laureate.firstname === req.query.firstname)
+                            || (laureate.surname !=null && laureate.surname === req.query.surname)
+                            || (prize.category !=null &&  prize.category === req.query.category)) {
+                            result.push(laureate);
+                        }
+                    }
+                });
+            } 
+        });
+        const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback("No result", null);
+        }
+        return callback(null, finalResult);
+    }catch (e) {
+        console.log("error");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
 module.exports = {
     listerLaureats: listerLaureats,
     lireIdLaureats: lireIdLaureats,
     numberMore1Nobel: numberMore1Nobel,
-    lireLaureates: lireLaureates
+    lireLaureates: lireLaureates,
+    filterLaureats: filterLaureats
 }

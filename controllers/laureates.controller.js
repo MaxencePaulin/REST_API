@@ -34,3 +34,13 @@ exports.severalNobels = (req, res, next) => {
         return res.status(200).send({ success: 1, data: results});
     });
 };
+
+exports.laureatesFilter = (req, res, next) => {
+    laureatesService.filterLaureats(req, (error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        return res.status(200).send({ success: 1, data: results});
+    });
+}
