@@ -1,11 +1,9 @@
 const express = require("express");
 var router = express.Router();
-const {list, afficheInfo} = require("../controllers/laureates.controller.js");
+const {list, afficheInfo, severalNobels} = require("../controllers/laureates.controller.js");
 
 router.get("/id=:id", afficheInfo);
-router.get("/page=:page", list);
-router.use("/", (req, res) => {
-    res.redirect("/laureates/page=1");
-})
+router.get("/severalNobels", severalNobels);
+router.get("/", list);
 
 module.exports = router;

@@ -1,5 +1,26 @@
 const fs = require("fs");
 
+const pagination = (req, results) => {
+    if (!req.query.page || req.query.page < 1) {
+        req.query.page = 1;
+    }
+    if (!req.query.limit || req.query.limit < 1) {
+        req.query.limit = 10;
+    }
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const result = results.slice(startIndex, endIndex);
+    if (result.length === 0) {
+        return [];
+    }
+    const nbPage= Math.ceil(results.length / limit);
+    const totalResult = results.length;
+    const resultsPage = {page: page, limit: limit, nbPage: nbPage, totalResult: totalResult, result: result};
+    return resultsPage;
+}
+
 const lirePrizes = () => {
     try {
         const dataBuffer = fs.readFileSync("prize.json");
@@ -36,11 +57,15 @@ const lireLaureates = (prizesL) => {
 } 
 
 // F1 et F4 ?
-const listerLaureats = (callback) => {
+const listerLaureats = (req, callback) => {
     try {
         const prizesL = lirePrizes();
         const laureatesL = lireLaureates(prizesL);
-        return callback(null, laureatesL);
+        const result = pagination(req, laureatesL);
+        if (result.length === 0) {
+            return callback("No result", null);
+        }
+        return callback(null, result);
     } catch (e) {
         console.log("error");
         console.log(e);
@@ -61,7 +86,7 @@ const lireIdLaureats = (req, callback) => {
             }
         });
         if (result[0] == null) {
-            return callback([], null);
+            return callback("No result", null);
         }
         return callback(null, result);
     }catch (e) {
@@ -71,7 +96,58 @@ const lireIdLaureats = (req, callback) => {
     }
 }
 
+// F5
+const numberMore1Nobel = (req, callback) => {
+    try {
+        const prizes = lirePrizes();
+        const laureatesL = [];
+        const temp = [];
+        const result = [];
+        // console.log(prizes.filter((prize) => {return prize.laureates.id === "6"}));
+        prizes.forEach((prize => {
+            if (prize.laureates) {
+                prize.laureates.forEach((laureate) => {
+                    laureatesL.push(laureate);
+
+                });
+            }
+        }));
+        laureatesL.forEach((laureate) =>{
+            let tmp = temp.find((l) => l.id === laureate.id);
+            let occ = laureatesL.filter(l => l.id===laureate.id).length;
+            if (!tmp) {
+                temp.push({
+                    id: laureate.id,
+                    firstname: laureate.firstname,
+                    surname: laureate.surname,
+                    nbNobel: occ
+                });
+            }
+        });
+        temp.forEach((r) => {
+            if(r.nbNobel > 1){
+                result.push({
+                    firstname: r.firstname,
+                    surname: r.surname,
+                    nbNobel: r.nbNobel
+                });
+            }
+        });
+        const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback("No result", null);
+        }
+        return callback(null, finalResult);
+    }catch (e) {
+        console.log("error");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
 module.exports = {
     listerLaureats: listerLaureats,
-    lireIdLaureats: lireIdLaureats
+    lireIdLaureats: lireIdLaureats,
+    numberMore1Nobel: numberMore1Nobel,
+    lireLaureates: lireLaureates
 }

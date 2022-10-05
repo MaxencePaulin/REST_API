@@ -15,16 +15,6 @@ exports.numberNobels = (req, res, next) => {
     });
 };
 
-exports.byLaureates = (req, res, next) => {
-    nobelsService.numberMore1Nobel((error, results) => {
-        if (error) {
-            return res.status(400).send({ success: 0, data: error });
-        }
-        console.log("Success");
-        return res.status(200).send({ success: 1, data: results});
-    });
-};
-
 exports.categoryNobels = (req, res) => {
     nobelsService.listerCategoryNobels((error, results) => {
         if (error) {
@@ -47,6 +37,16 @@ exports.NobelsMax = (req, res) => {
 
 exports.parAn = (req, res) => {
     nobelsService.listerNombreNobelsParAn(req, (error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        return res.status(200).send({ success: 1, data: results});
+    });
+}
+
+exports.nobelsInfo = (req, res) => {
+    nobelsService.afficheNobelsInfo(req, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }

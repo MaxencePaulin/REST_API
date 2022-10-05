@@ -1,4 +1,5 @@
 const fs = require("fs");
+const {lireLaureates} = require("./laureates.service");
 
 const pagination = (req, results) => {
     if (!req.query.page || req.query.page < 1) {
@@ -7,11 +8,17 @@ const pagination = (req, results) => {
     if (!req.query.limit || req.query.limit < 1) {
         req.query.limit = 10;
     }
-    const page = req.query.page;
-    const limit = req.query.limit;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const resultsPage = results.slice(startIndex, endIndex);
+    const result = results.slice(startIndex, endIndex);
+    if (result.length === 0) {
+        return [];
+    }
+    const nbPage= Math.ceil(results.length / limit);
+    const totalResult = results.length;
+    const resultsPage = {page: page, limit: limit, nbPage: nbPage, totalResult: totalResult, result: result};
     return resultsPage;
 }
 
@@ -39,49 +46,6 @@ const listerNombreNobels = (callback) => {
             }
         });
         return callback(null, result.length);
-    }catch (e) {
-        console.log("error");
-        console.log(e);
-        return callback([], null);
-    }
-}
-
-// F5
-const numberMore1Nobel = (callback) => {
-    try {
-        const prizes = lirePrizes();
-        const laureatesL = [];
-        const temp = [];
-        const result = [];
-        // console.log(prizes.filter((prize) => {return prize.laureates.id === "6"}));
-        prizes.forEach((prize => {
-            if (prize.laureates) {
-                prize.laureates.forEach((laureate) => {
-                    laureatesL.push(laureate);
-
-                });
-            }
-        }));
-        laureatesL.forEach((laureate) =>{
-            let tmp = temp.find((l) => l.id === laureate.id);
-            let occ = laureatesL.filter(l => l.id===laureate.id).length;
-            if (!tmp) {
-                temp.push({
-                    id: laureate.id,
-                    firstname: laureate.firstname,
-                    surname: laureate.surname,
-                    nbNobel: occ
-                });
-            }
-        });
-        temp.forEach((r) => {
-            result.push({
-                firstname: r.firstname,
-                surname: r.surname,
-                nbNobel: r.nbNobel
-            })
-        } )
-        return callback(null, result);
     }catch (e) {
         console.log("error");
         console.log(e);
@@ -117,7 +81,7 @@ const listerCategoryNobelsMax = (callback) => {
         const prizes = lirePrizes();
         const result = [];
         prizes.forEach((prize) => {
-            if (prize.category && prize.laureates) {
+            if (prize.laureates) {
                 let tmp = result.find((c) => c.category === prize.category);
                 if (!tmp) {
                     result.push({
@@ -174,10 +138,51 @@ const listerNombreNobelsParAn = (req, callback) => {
     }
 }
 
+// F9
+const afficheNobelsInfo = (req, callback) => {
+    try {
+        const id = req.params.id;
+        const prizes = lirePrizes();
+        const laureatesL = lireLaureates(prizes);
+        const result = [];
+        prizes.forEach((prize) => {
+            if (prize.laureates) {
+                prize.laureates.forEach((laureate) => {
+                    if (laureate.id === id) {
+                        var tmp = result.find((l) => l.id === laureate.id);
+                        if (!tmp) {
+                            result.push({
+                                id: laureate.id,
+                                firstname: laureate.firstname,
+                                surname: laureate.surname,
+                                prize: [
+                                    {
+                                        year: prize.year,
+                                        category: prize.category,
+                                        motivation: laureate.motivation
+                                    }
+                                ]
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        if (result.length === 0) {
+            return callback("No result", null);
+        }
+        return callback(null, result);
+    }catch (e) {
+        console.log("error afficheNobelsInfo");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
 module.exports = {
     listerNombreNobels: listerNombreNobels,
-    numberMore1Nobel: numberMore1Nobel,
     listerCategoryNobels: listerCategoryNobels,
     listerCategoryNobelsMax: listerCategoryNobelsMax,
-    listerNombreNobelsParAn: listerNombreNobelsParAn
+    listerNombreNobelsParAn: listerNombreNobelsParAn,
+    afficheNobelsInfo: afficheNobelsInfo
 }
