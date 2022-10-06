@@ -247,6 +247,7 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
     }
 }
 
+// PAS TERMINE (c'est de la merde actuellement)
 const addLaureats = (req, firstname, surname, motivation, share, year, category, callback) => {
     try {
         const prizes = lirePrizes();
@@ -257,47 +258,48 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
         let maxId = 0;
         const result = [];
         const laureatesL = lireLaureates(prizes);
-        laureatesL.forEach((laureate) => {
-
-        });
         prizes.forEach((prize) => {
-            if (prize.laureates){
-                prize.laureates.forEach((laureate) => {
+            result.push(prize);
+            if (result.laureates){
+                result.laureates.forEach((laureate) => {
                     if (laureate.firstname === firstname && laureate.surname === surname) {
                         id = laureate.id;
                     }
                     if (laureate.id > maxId) {
                         maxId = laureate.id;
                     }
-                    result.push({
-                        year: prize.year,
-                        category: prize.category,
-                        laureates: [laureate]
-                    });
                 });
                 if (prize.year === year && prize.category === category) {
                     if (id === null) {
-                        result.push({
-                            year: prize.year,
-                            category: prize.category,
-                            laureates: [
-                                {
-                                    id: maxId+1,
-                                    firstname: firstname,
-                                    surname: surname,
-                                    motivation: "\""+motivation+"\"",
-                                    share: share
-                                }
-                            ]
-                        });
-                    }else {
-                        result.push({
-                            id: id,
+                        laureate =+ {
+                            id: maxId+1,
                             firstname: firstname,
                             surname: surname,
                             motivation: "\""+motivation+"\"",
                             share: share
-                        });
+                        }
+//                        result.push({
+//                            year: prize.year,
+//                            category: prize.category,
+//                            laureates: [
+//                                {
+//                                    id: maxId+1,
+//                                    firstname: firstname,
+//                                    surname: surname,
+//                                    motivation: "\""+motivation+"\"",
+//                                    share: share
+//                                }
+//                            ]
+//                        });
+                    }else {
+                        if (laureatesL.find((l) => l.id === id)) {
+                            result.forEach((l) => {
+                                   if (l.laureates.id === id) {
+                                       l.laureates.motivation = "\""+motivation+"\"";
+                                       l.laureates.share = share;
+                                   }
+                            });
+                        }
                     }
                 }
             }
