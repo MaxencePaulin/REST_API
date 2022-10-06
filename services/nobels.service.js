@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { lireLaureates } = require("./laureates.service");
 
 const pagination = (req, results) => {
     if (!req.query.page || req.query.page < 1) {
@@ -18,9 +17,8 @@ const pagination = (req, results) => {
     }
     const nbPage= Math.ceil(results.length / limit);
     const totalResult = results.length;
-    const resultsPage = {page: page, limit: limit, nbPage: nbPage,
+    return {page: page, limit: limit, nbPage: nbPage,
         totalResult: totalResult, result: result};
-    return resultsPage;
 }
 
 const lirePrizes = () => {
@@ -54,8 +52,7 @@ const listerNombreNobels = (callback) => {
     }
 }
 
-// F6
-const listerCategoryNobels = (req, callback) => {
+const listerCategory = () => {
     try {
         const prizes = lirePrizes();
         const result = [];
@@ -67,7 +64,25 @@ const listerCategoryNobels = (req, callback) => {
                 }
             }
         });
+        return result;
+    }catch (e) {
+        console.log("error listerCategory");
+        console.log(e);
+        return null;
+    }
+}
+
+// F6
+const listerCategoryNobels = (req, callback) => {
+    try {
+        const result = listerCategory();
+        if (result.length === 0) {
+            return callback("No category", null);
+        }
         const finalResult = pagination(req, result);
+        if (finalResult.length === 0) {
+            return callback(`No result on page ${req.query.page}`, null);
+        }
         return callback(null, finalResult);
     }catch (e) {
         console.log("error listerCategoryNobels");
@@ -151,7 +166,6 @@ const afficheNobelsInfo = (req, callback) => {
     try {
         const id = req.params.id;
         const prizes = lirePrizes();
-        const laureatesL = lireLaureates(prizes);
         const result = [];
         prizes.forEach((prize) => {
             if (prize.laureates) {
@@ -219,11 +233,36 @@ const listerAnneeSansNobel = (req, callback) => {
     }
 }
 
+// vues
+const allPrizes = (category, year, callback) => {
+    try {
+        const dataBuffer = fs.readFileSync("prize.json");
+        const dataJSON = dataBuffer.toString();
+        const prizes = JSON.parse(dataJSON).prizes;
+        const resultCat = [];
+        if (category) {
+            prizes.forEach((prize) => {
+                if (prize.category === category) {
+                    resultCat.push(prize);
+                }
+            });
+            return callback(null, {totalResult: resultCat.length, result: resultCat});
+        }
+        return callback(null, {totalResult: prizes.length, result: prizes});
+    } catch (e) {
+        console.log("error allPrizes");
+        console.log(e);
+        return callback([], null);
+    }
+}
+
 module.exports = {
     listerNombreNobels: listerNombreNobels,
     listerCategoryNobels: listerCategoryNobels,
     listerCategoryNobelsMax: listerCategoryNobelsMax,
     listerNombreNobelsParAn: listerNombreNobelsParAn,
     afficheNobelsInfo: afficheNobelsInfo,
-    listerAnneeSansNobel: listerAnneeSansNobel
+    listerAnneeSansNobel: listerAnneeSansNobel,
+    listerCategory: listerCategory,
+    allPrizes: allPrizes
 }

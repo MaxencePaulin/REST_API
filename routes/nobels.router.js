@@ -1,7 +1,7 @@
 const express = require("express");
 var router = express.Router();
 const {numberNobels, categoryNobels, 
-    NobelsMax, parAn, nobelsInfo, noNobels} = require("../controllers/nobels.controller.js");
+    NobelsMax, parAn, nobelsInfo, noNobels, all} = require("../controllers/nobels.controller.js");
 
 router.get("/category", categoryNobels);
 /**
@@ -36,7 +36,7 @@ router.get("/max", NobelsMax);
  * @swagger
  * /nobels/max:
  *   get:
- *      description: return the category with the most number of the laureates (F7)
+ *      description: return the category with the most number of laureates (F7)
  *      tags:
  *          - nobels
  *      responses:
@@ -82,10 +82,10 @@ router.get("/year", parAn);
  *              description: Bad request
 */
 
-router.get("/laureatesId=:id", nobelsInfo);
+router.get("/laureateId=:id", nobelsInfo);
 /**
  * @swagger
- * /nobels/laureatesId={id}:
+ * /nobels/laureateId={id}:
  *   get:
  *      description: Display information of a laureate by id with its prizes (F9)
  *      tags:
@@ -142,6 +142,8 @@ router.get("/noNobels", noNobels);
  *          '400':
  *              description: Bad request
 */
+
+router.get("/all", all);
 
 router.get("/", numberNobels);
 /**

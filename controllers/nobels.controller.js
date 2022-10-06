@@ -4,7 +4,7 @@ dotenv.config();
 const nobelsService = require("../services/nobels.service.js");
 
 // GET 
-exports.numberNobels = (req, res, next) => {
+exports.numberNobels = (req, res) => {
     nobelsService.listerNombreNobels((error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
@@ -57,6 +57,15 @@ exports.nobelsInfo = (req, res) => {
 
 exports.noNobels = (req, res) => {
     nobelsService.listerAnneeSansNobel(req, (error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        return res.status(200).send({ success: 1, data: results});
+    });
+}
+exports.all = (req, res) => {
+    nobelsService.allPrizes(req.query.category, req.query.year, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }

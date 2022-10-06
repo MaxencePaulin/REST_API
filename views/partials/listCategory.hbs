@@ -1,0 +1,95 @@
+<h3>Afficher les lauréats selon la catégories (prénom, nom, année):</h3>
+<div>
+    <label for="category">Categories : </label>
+    <select name="category" id="category">
+        <option value="-1">Please select one category</option>
+        {{#each category}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+</div>
+<br>
+<div class="row">
+    <div class="col-12">
+        <table class="table table-striped" id="result">
+
+        </table>
+    </div>
+</div>
+
+<!--<div class="row">
+    <div class="col-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Firstname</th>
+                    <th scope="col">Surname</th>
+                    <th scope="col">Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each laureates}}
+                <tr>
+                    <td>{{this.firstname}}</td>
+                    <td>{{this.surname}}</td>
+                    <td>{{this.year}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>-->
+
+<script>
+    let select = document.getElementById("category");
+    select.addEventListener("change", function () {
+        let index = select.selectedIndex;
+        let option = select.options[index];
+        let value = option.value;
+        if (value != -1) {
+            let url = "http://localhost:3000/nobels/all?category=" + value;
+            fetch(url)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        let result = document.getElementById("result");
+                        result.innerHTML = "";
+                        let thead = document.createElement("thead");
+                        let tr0 = document.createElement("tr");
+                        let th0 = document.createElement("th", ["scope", "col"]);
+                        th0.innerHTML = "Firstname";
+                        let th1 = document.createElement("th", ["scope", "col"]);
+                        th1.innerHTML = "Surname";
+                        let th2 = document.createElement("th", ["scope", "col"]);
+                        th2.innerHTML = "Year";
+                        tr0.appendChild(th0);
+                        tr0.appendChild(th1);
+                        tr0.appendChild(th2);
+                        thead.appendChild(tr0);
+                        result.appendChild(thead);
+                        let tbody = document.createElement("tbody");
+                        tbody.innerHTML = "";
+                        data.data.result.forEach((prize) => {
+                            if (prize.laureates) {
+                                prize.laureates.forEach((laureate) => {
+                                    let tr = document.createElement("tr");
+                                    let td1 = document.createElement("td");
+                                    td1.innerHTML = laureate.firstname;
+                                    let td2 = document.createElement("td");
+                                    td2.innerHTML = laureate.surname;
+                                    let td3 = document.createElement("td");
+                                    td3.innerHTML = prize.year;
+                                    tr.appendChild(td1);
+                                    tr.appendChild(td2);
+                                    tr.appendChild(td3);
+                                    tbody.appendChild(tr);
+                                    result.appendChild(tbody);
+                                });
+                            }
+                        });
+                    });
+        }else {
+            let result = document.getElementById("result");
+            result.innerHTML = "";
+        }
+    });
+</script>

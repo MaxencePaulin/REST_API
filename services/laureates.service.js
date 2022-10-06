@@ -17,8 +17,7 @@ const pagination = (req, results) => {
     }
     const nbPage= Math.ceil(results.length / limit);
     const totalResult = results.length;
-    const resultsPage = {page: page, limit: limit, nbPage: nbPage, totalResult: totalResult, result: result};
-    return resultsPage;
+    return {page: page, limit: limit, nbPage: nbPage, totalResult: totalResult, result: result};
 }
 
 const lirePrizes = () => {
@@ -167,7 +166,7 @@ const filterLaureats = (req, callback) => {
         const finalResult = pagination(req, result);
         if (finalResult.length === 0) {
             return callback("No result or invalid parameter, do"
-                +"filter?firstname=test or filter?surname=test"
+                +" filter?firstname=test or filter?surname=test"
                 +" or filter?category=medicine with valid values", null);
         }
         return callback(null, finalResult);
@@ -193,7 +192,7 @@ const deleteLaureats = (id, year, category, callback) => {
         prizes.forEach((prize) => {
             if (prize.laureates){
                 prize.laureates.forEach((laureate) => {
-                    if (laureate.id != id || prize.year != year || prize.category != category) {
+                    if (laureate.id !== id || prize.year !== year || prize.category !== category) {
                         result.push({
                             year: prize.year,
                             category: prize.category,
@@ -206,8 +205,8 @@ const deleteLaureats = (id, year, category, callback) => {
                 });
             }
         });
-        if (result.length == tot) {
-            return callback("Laureate doesn't exist", null);
+        if (result.length === tot) {
+            return callback("Laureate doesn't exist or don't match with these parameters", null);
         }
 //        savePrizes(result);
         return callback(null, removeLaureate);
@@ -247,7 +246,7 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
     }
 }
 
-// PAS TERMINE (c'est de la merde actuellement)
+// F15
 const addLaureats = (req, firstname, surname, motivation, share, year, category, callback) => {
     try {
         const prizes = lirePrizes();
@@ -337,5 +336,6 @@ module.exports = {
     filterLaureats: filterLaureats,
     deleteLaureats: deleteLaureats,
     editMotivationLaureats: editMotivationLaureats,
-    addLaureats: addLaureats
+    addLaureats: addLaureats,
+    lirePrizes: lirePrizes
 }

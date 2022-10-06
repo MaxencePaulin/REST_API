@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
+// const path = require("path");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 // path.join(__dirname,)
@@ -8,6 +8,7 @@ const dotenv = require("dotenv");
 const laureatesRoutes = require("./routes/laureates.router.js");
 const nobelsRoutes = require("./routes/nobels.router.js");
 const hbengine = require("express-handlebars");
+const {listerCategory} = require("./services/nobels.service");
 dotenv.config();
 
 const port = process.env.PORT;
@@ -40,6 +41,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Middleware
 app.use((req, res, next) =>{
+    console.log("url: "+req.url);
     console.log("Browser: "+ 
         req.headers["user-agent"]);
     console.log("Language: "+
@@ -63,6 +65,7 @@ app.use("/api/nobels", (req, res) => {
 
 app.get("/", (req, res) => {
     res.render("home", {
+        category: listerCategory,
         posts: [
             {
                 author: "Maxence",
@@ -82,7 +85,6 @@ app.use("*",(req, res, next) => {
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    console.log(err);
     res.render("error404.hbs");
 });
 
