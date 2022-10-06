@@ -257,55 +257,70 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
         let id = null;
         let maxId = 0;
         const result = [];
+        const verif = [];
         const laureatesL = lireLaureates(prizes);
         prizes.forEach((prize) => {
             result.push(prize);
-            if (result.laureates){
-                result.laureates.forEach((laureate) => {
-                    if (laureate.firstname === firstname && laureate.surname === surname) {
-                        id = laureate.id;
-                    }
-                    if (laureate.id > maxId) {
-                        maxId = laureate.id;
-                    }
-                });
-                if (prize.year === year && prize.category === category) {
-                    if (id === null) {
-                        laureate =+ {
-                            id: maxId+1,
-                            firstname: firstname,
-                            surname: surname,
-                            motivation: "\""+motivation+"\"",
-                            share: share
-                        }
-//                        result.push({
-//                            year: prize.year,
-//                            category: prize.category,
-//                            laureates: [
-//                                {
-//                                    id: maxId+1,
-//                                    firstname: firstname,
-//                                    surname: surname,
-//                                    motivation: "\""+motivation+"\"",
-//                                    share: share
-//                                }
-//                            ]
-//                        });
-                    }else {
-                        if (laureatesL.find((l) => l.id === id)) {
-                            result.forEach((l) => {
-                                   if (l.laureates.id === id) {
-                                       l.laureates.motivation = "\""+motivation+"\"";
-                                       l.laureates.share = share;
-                                   }
-                            });
-                        }
-                    }
-                }
+        });
+        laureatesL.forEach((laureate) => {
+            if (parseInt(laureate.id) > maxId) {
+                maxId = laureate.id;
+            }
+            if (laureate.firstname === firstname && laureate.surname === surname) {
+                id = laureate.id;
             }
         });
+        if (id === null) {
+            maxId++;
+            newId = maxId.toString();
+            result.forEach((prize) => {
+                if (prize.year === year && prize.category === category){
+                    if (prize.laureates){
+                        prize.laureates.push({
+                            id: newId, 
+                            firstname: firstname, 
+                            surname: surname, 
+                            motivation: motivation, 
+                            share: share
+                        });
+                        verif.push({
+                            id: id, 
+                            firstname: firstname, 
+                            surname: surname, 
+                            motivation: motivation, 
+                            share: share
+                        });
+                    }
+                }
+            });
+        }else if (id != null) {
+            result.forEach((prize) => {
+                if (prize.year === year && prize.category === category){    
+                    if (prize.laureates){
+                        prize.laureates.forEach((laureate) => {
+                            if (laureate.id === id) {
+                                laureate.motivation = motivation;
+                                if (share != null) {
+                                    laureate.share = share;
+                                }
+                                verif.push({
+                                    id: id, 
+                                    firstname: firstname, 
+                                    surname: surname, 
+                                    motivation: motivation, 
+                                    share: share
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        if (verif.length === 0) {
+            return callback("Can't create laureates with these paramater (year or category invalid)", null);
+        }
         const finalResult = pagination(req, result);
-//        savePrizes(result);
+        // savePrizes(result);
         return callback(null, finalResult);
     }catch (e){
         console.log("error addLaureats");
