@@ -77,9 +77,9 @@ exports.all = (req, res) => {
     });
 }
 
-exports.template1Tit = (req, res) => {
+exports.template1 = (req, res) => {
     console.log("test",req.query.category);
-    nobelsService.allPrizes(req.query.category, req.query.year, (error, results) => {
+    nobelsService.allPrizes(req.query.category,(error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
@@ -87,7 +87,21 @@ exports.template1Tit = (req, res) => {
         // console.log(results);
         return res.render("template1", {
             category: listerCategory,
-            data:results
+            // data:results
+        });
+    });
+}
+
+exports.template2 = (req, res, next) => {
+    nobelsService.allPrizes(req.query.category, (error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        // console.log(results);
+        return res.render("template2", {
+            category: listerCategory,
+            // data:results
         });
     });
 }

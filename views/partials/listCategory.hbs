@@ -46,7 +46,7 @@
 
 <script>
     let select = document.getElementById("category");
-    select.addEventListener("change", function () {
+    select.addEventListener("change", () => {
         let index = select.selectedIndex;
         let option = select.options[index];
         let value = option.value;

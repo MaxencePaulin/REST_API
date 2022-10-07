@@ -1,0 +1,23 @@
+<h3>Choisir la catégorie :</h3>
+<div>
+    <label for="category">Categories : </label>
+    <select name="category" id="category">
+        <option value="-1">Please select one category</option>
+        {{#each category}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+    </select>
+    <label for="year" class="ml-5">Année : </label>
+    <input type="text" id="year" name="year">
+    <div class="row">
+        <label for="motivation">Motivation : </label>
+        <textarea rows="3" id="motivation" name="motivation"></textarea>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-12">
+        <table class="table table-striped" id="result">
+        </table>
+    </div>
+</div>

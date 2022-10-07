@@ -234,7 +234,7 @@ const listerAnneeSansNobel = (req, callback) => {
 }
 
 // vues
-const allPrizes = (category, year, callback) => {
+const allPrizes = (category, callback) => {
     try {
         const dataBuffer = fs.readFileSync("prize.json");
         const dataJSON = dataBuffer.toString();
