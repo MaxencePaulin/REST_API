@@ -275,7 +275,7 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
             newId = maxId.toString();
             result.forEach((prize) => {
                 if (prize.year === year && prize.category === category){
-                    if (prize.laureates){
+                    if (prize.laureates && !stop){
                         prize.laureates.push({
                             id: newId, 
                             firstname: firstname, 
@@ -290,13 +290,32 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
                             motivation: "\""+motivation+"\"",
                             share: share
                         });
+                        stop = true;
+                    } else if (!prize.laureates && !stop) {
+                        Reflect.deleteProperty(prize, "overallMotivation");
+                        // push une nouvelle propriété laureates dans prize
+                        prize.laureates = [{
+                            id: newId,
+                            firstname: firstname,
+                            surname: surname,
+                            motivation: "\"" + motivation + "\"",
+                            share: share
+                        }];
+                        verif.push({
+                            id: newId,
+                            firstname: firstname,
+                            surname: surname,
+                            motivation: "\"" + motivation + "\"",
+                            share: share
+                        });
+                        stop = true;
                     }
                 }
             });
         }else if (id != null) {
             result.forEach((prize) => {
                 if (prize.year === year && prize.category === category){
-                    if (prize.laureates){
+                    if (prize.laureates && !stop){
                         prize.laureates.forEach((laureate) => {
                             if ((laureate.id === id) && !stop) {
                                 laureate.motivation = "\""+motivation+"\"";
@@ -346,6 +365,7 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
                             motivation: "\""+motivation+"\"",
                             share: share
                         });
+                        stop = true;
                     }
                 }
             });
