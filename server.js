@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 const laureatesRoutes = require("./routes/laureates.router.js");
 const nobelsRoutes = require("./routes/nobels.router.js");
 const hbengine = require("express-handlebars");
-const {template1, template2} = require("./controllers/nobels.controller.js");
+const {laureatesByCategory, addLaureateForm} = require("./controllers/nobels.controller.js");
 dotenv.config();
 
 const port = process.env.PORT;
@@ -68,8 +68,8 @@ app.use("/api/nobels", (req, res) => {
     res.redirect("/nobels");
 });
 
-app.get("/template1", template1);
-app.get("/template2", template2);
+app.get("/laureatesByCategory", laureatesByCategory);
+app.get("/addLaureateForm", addLaureateForm);
 
 app.get("/", (req, res) => {
     return res.render("home", {

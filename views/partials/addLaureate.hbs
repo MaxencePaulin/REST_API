@@ -40,7 +40,7 @@
 
 </p>
 <p id="resultError" class="text-danger">
-    test
+
 </p>
 
 <script>
@@ -64,10 +64,10 @@
             alert("Veuillez sélectionner une catégorie");
         } else if (year === "") {
             alert("Veuillez entrer une année");
-        } else if (firstname === "") {
-            alert("Veuillez entrer un prénom");
-        } else if (surname === "") {
-            alert("Veuillez entrer un nom");
+        } else if (firstname === "" || firstname.length > 3) {
+            alert("Veuillez entrer un prénom de plus de 3 caractères");
+        } else if (surname === "" || surname.length > 3) {
+            alert("Veuillez entrer un nom de plus de 3 caractères");
         } else if (motivation === "") {
             alert("Veuillez entrer une motivation");
         } else {
@@ -97,7 +97,7 @@
                     resultGood.innerHTML = "Lauréat ajouté/modifié";
                 } else {
                     console.log(response);
-                    resultError.innerHTML = "Erreur lors de l'ajout/modification du lauréat vérifiez bien que l'année existe déjà";
+                    resultError.innerHTML = "Erreur lors de l'ajout/modification du lauréat vérifiez bien que l'année existe déjà et que la catégorie pour celle-ci existe";
                 }
             });
         }

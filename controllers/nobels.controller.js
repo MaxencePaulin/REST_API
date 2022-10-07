@@ -77,29 +77,28 @@ exports.all = (req, res) => {
     });
 }
 
-exports.template1 = (req, res) => {
-    console.log("test",req.query.category);
-    nobelsService.allPrizes(req.query.category,(error, results) => {
+exports.laureatesByCategory = (req, res) => {
+    nobelsService.listerCategoryNobels(req,(error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
         console.log("Success");
         // console.log(results);
-        return res.render("template1", {
+        return res.render("laureatesByCategory", {
             category: listerCategory,
             // data:results
         });
     });
 }
 
-exports.template2 = (req, res) => {
-    nobelsService.allPrizes(req.query.category, (error, results) => {
+exports.addLaureateForm = (req, res) => {
+    nobelsService.listerCategoryNobels(req, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
         console.log("Success");
         // console.log(results);
-        return res.render("template2", {
+        return res.render("addLaureateForm", {
             category: listerCategory,
             // data:results
         });

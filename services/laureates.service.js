@@ -1,4 +1,5 @@
 const fs = require("fs");
+const {validateCategory, validateYear, validateMotivation, validateSurname, validateFirstname} = require("../middlewares/laureates.middleware");
 
 const pagination = (req, results) => {
     if (!req.query.page || req.query.page < 1) {
@@ -250,6 +251,10 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
 const addLaureats = (req, firstname, surname, motivation, share, year, category, callback) => {
     try {
         const prizes = lirePrizes();
+        // console.log(firstname)
+        // if (!validateFirstname(firstname) || !validateSurname(surname) || !validateMotivation(motivation) || !validateYear(year, prizes) || !validateCategory(category)) {
+        //     return callback("You can only add a laureate with firstname (3 char min), surname (3 char min), motivation not empty, year already exist, category exist and work with year", null);
+        // }
         if (!firstname || !surname || !motivation || !year || !category) {
             return callback("You can only add a laureate with firstname, surname, motivation, year, category minimum", null);
         }
@@ -390,6 +395,5 @@ module.exports = {
     filterLaureats: filterLaureats,
     deleteLaureats: deleteLaureats,
     editMotivationLaureats: editMotivationLaureats,
-    addLaureats: addLaureats,
-    lirePrizes: lirePrizes,
+    addLaureats: addLaureats
 }
