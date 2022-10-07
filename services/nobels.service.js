@@ -243,12 +243,20 @@ const allPrizes = (category, year, callback) => {
         if (category) {
             prizes.forEach((prize) => {
                 if (prize.category === category) {
-                    resultCat.push(prize);
+                    if (prize.laureates) {
+                        prize.laureates.forEach((laureate) => {
+                            resultCat.push({
+                                firstname: laureate.firstname,
+                                surname: laureate.surname,
+                                year: prize.year
+                            });
+                        });
+                    }
                 }
             });
             return callback(null, {totalResult: resultCat.length, result: resultCat});
         }
-        return callback(null, {totalResult: prizes.length, result: prizes});
+        return callback(null, {totalResult: 0, result: []});
     } catch (e) {
         console.log("error allPrizes");
         console.log(e);

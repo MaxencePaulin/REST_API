@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 // const datasource = process.env.DATASOURCE;
 const nobelsService = require("../services/nobels.service.js");
+const {listerCategory} = require("../services/nobels.service");
 
 // GET 
 exports.numberNobels = (req, res) => {
@@ -65,11 +66,28 @@ exports.noNobels = (req, res) => {
     });
 }
 exports.all = (req, res) => {
+    console.log("test",req.query.category);
     nobelsService.allPrizes(req.query.category, req.query.year, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
         console.log("Success");
+        // console.log(results);
         return res.status(200).send({ success: 1, data: results});
+    });
+}
+
+exports.template1Tit = (req, res) => {
+    console.log("test",req.query.category);
+    nobelsService.allPrizes(req.query.category, req.query.year, (error, results) => {
+        if (error) {
+            return res.status(400).send({ success: 0, data: error });
+        }
+        console.log("Success");
+        // console.log(results);
+        return res.render("template1", {
+            category: listerCategory,
+            data:results
+        });
     });
 }

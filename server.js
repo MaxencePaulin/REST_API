@@ -8,7 +8,8 @@ const dotenv = require("dotenv");
 const laureatesRoutes = require("./routes/laureates.router.js");
 const nobelsRoutes = require("./routes/nobels.router.js");
 const hbengine = require("express-handlebars");
-const {listerCategory} = require("./services/nobels.service");
+const {template1Tit} = require("./controllers/nobels.controller.js");
+const nobelsService = require("./services/nobels.service");
 dotenv.config();
 
 const port = process.env.PORT;
@@ -63,9 +64,10 @@ app.use("/api/nobels", (req, res) => {
     res.redirect("/nobels");
 });
 
+app.get("/template1", template1Tit);
+
 app.get("/", (req, res) => {
-    res.render("home", {
-        category: listerCategory,
+    return res.render("home", {
         posts: [
             {
                 author: "Maxence",
@@ -84,7 +86,11 @@ app.use("*",(req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+    if(req.path === "/favicon.ico"){
+        return;
+    }
     console.error(err.stack);
+    console.log(req.path);
     res.render("error404.hbs");
 });
 
