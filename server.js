@@ -80,15 +80,15 @@ app.get("/", (req, res) => {
 });
 
 app.use("*",(req, res, next) => {
+    if(req.path === "/favicon.ico"){
+        return;
+    }
     const err = new Error("Not Found");
     err.status = 404;
     next(err);
 });
 
 app.use((err, req, res, next) => {
-    if(req.path === "/favicon.ico"){
-        return;
-    }
     console.error(err.stack);
     console.log(req.path);
     res.render("error404.hbs");

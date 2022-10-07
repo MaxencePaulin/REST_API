@@ -67,7 +67,7 @@ exports.noNobels = (req, res) => {
 }
 exports.all = (req, res) => {
     console.log("test",req.query.category);
-    nobelsService.allPrizes(req.query.category, req.query.year, (error, results) => {
+    nobelsService.allPrizes(req.query.category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
@@ -92,7 +92,7 @@ exports.template1 = (req, res) => {
     });
 }
 
-exports.template2 = (req, res, next) => {
+exports.template2 = (req, res) => {
     nobelsService.allPrizes(req.query.category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });

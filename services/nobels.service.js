@@ -257,7 +257,7 @@ const allPrizes = (category, callback) => {
             });
             return callback(null, {totalResult: resultCat.length, result: resultCat});
         }
-        return callback(null, {totalResult: 0, result: []});
+        return callback(null, {totalResult: prizes.length, result: prizes});
     } catch (e) {
         console.log("error allPrizes");
         console.log(e);

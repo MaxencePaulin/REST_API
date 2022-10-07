@@ -1,16 +1,27 @@
 <h3>Afficher les lauréats selon la catégories (prénom, nom, année):</h3>
-<div>
+
 <!--<form name="refresh" method=GET action="/template1">-->
-    <label for="category">Categories : </label>
-    <select name="category" id="category">
-        <option value="-1">Please select one category</option>
-        {{#each category}}
-            <option value="{{this}}">{{this}}</option>
-        {{/each}}
-    </select>
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="category">Catégorie :</label>
+        {{#unless category}}
+            <fieldset disabled>
+                <select id="category" class="form-control">
+                    <option>Aucune catégories trouvé</option>
+                </select>
+            </fieldset>
+        {{/unless}}
+        <select name="category" id="category" class="form-control">
+            <option value="-1">Sélectionnez une catégorie</option>
+            {{#each category}}
+                <option value="{{this}}">{{this}}</option>
+            {{/each}}
+        </select>
+    </div>
+</div>
 <!--    <input type="submit" value="Submit">-->
 <!--</form>-->
-</div>
+
 <br>
 <div class="row">
     <div class="col-12">
@@ -19,7 +30,7 @@
     </div>
 </div>
 
-<!--{{#if data.result}}-->
+        <!--{{#if data.result}}-->
 <!--    <div class="row">-->
 <!--        <div class="col-12">-->
 <!--            <table class="table table-striped">-->
@@ -31,18 +42,18 @@
 <!--                    </tr>-->
 <!--                </thead>-->
 <!--                <tbody>-->
-<!--                    {{#each data.result}}-->
+        <!--                    {{#each data.result}}-->
 <!--                        <tr>-->
 <!--                            <td>{{this.firstname}}</td>-->
 <!--                            <td>{{this.surname}}</td>-->
 <!--                            <td>{{this.year}}</td>-->
 <!--                        </tr>-->
-<!--                    {{/each}}-->
+        <!--                    {{/each}}-->
 <!--                </tbody>-->
 <!--            </table>-->
 <!--        </div>-->
 <!--    </div>-->
-<!--{{/if}}-->
+        <!--{{/if}}-->
 
 <script>
     let select = document.getElementById("category");
@@ -91,7 +102,7 @@
                             }
                         });
                     });
-        }else {
+        } else {
             let result = document.getElementById("result");
             result.innerHTML = "";
         }

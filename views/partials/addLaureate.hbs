@@ -1,23 +1,105 @@
-<h3>Choisir la catégorie :</h3>
-<div>
-    <label for="category">Categories : </label>
-    <select name="category" id="category">
-        <option value="-1">Please select one category</option>
-        {{#each category}}
-            <option value="{{this}}">{{this}}</option>
-        {{/each}}
-    </select>
-    <label for="year" class="ml-5">Année : </label>
-    <input type="text" id="year" name="year">
-    <div class="row">
-        <label for="motivation">Motivation : </label>
-        <textarea rows="3" id="motivation" name="motivation"></textarea>
+<h3>Ajouter/Modifier :</h3>
+<p>Ajouter un lauréat pour une catégorie et une année donnée et selon son prénom, nom et motivation. Si le prénom et nom existe déjà il sera modifié avec la motivation entrée</p>
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="category">Catégorie :</label>
+        {{#unless category}}
+            <fieldset disabled>
+                <select id="category" class="form-control">
+                    <option>Aucune catégories trouvé</option>
+                </select>
+            </fieldset>
+        {{/unless}}
+        <select name="category" id="category" class="form-control">
+            <option value="-1">Sélectionnez une catégorie</option>
+            {{#each category}}
+                <option value="{{this}}">{{this}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="year">Année :</label>
+        <input type="text" class="form-control" id="year" placeholder="Ex: 2021 (L'année doit déjà exister)">
     </div>
 </div>
+<div class="form-group">
+    <label for="firstname">Prénom :</label>
+    <input type="text" class="form-control" id="firstname" placeholder="Ex: Maxence">
+</div>
+<div class="form-group">
+    <label for="surname">Nom :</label>
+    <input type="text" class="form-control" id="surname" placeholder="Ex: Paulin">
+</div>
+<div class="form-group">
+    <label for="motivation">Motivation :</label>
+    <input type="text" class="form-control" id="motivation" placeholder="Ex: Pour avoir prouvé que la terre est plate.">
+</div>
+<button type="submit" class="btn btn-primary" id="button">Ajouter/Modifier le lauréat</button>
 <br>
-<div class="row">
-    <div class="col-12">
-        <table class="table table-striped" id="result">
-        </table>
-    </div>
-</div>
+<p id="resultGood" class="text-success">
+
+</p>
+<p id="resultError" class="text-danger">
+    test
+</p>
+
+<script>
+    // des que le bouton est pressé,regarder si la valeur de year est dans la base de donnée
+    // si oui, regarder si le prénom et nom existe déjà
+    // si oui, modifier la motivation
+    // si non, ajouter le lauréat
+    // si non, afficher un message d'erreur
+    let select = document.getElementById("button");
+    let resultGood = document.getElementById("resultGood");
+    let resultError = document.getElementById("resultError");
+    select.addEventListener("click", () => {
+        resultGood.innerHTML = "";
+        resultError.innerHTML = "";
+        let category = document.getElementById("category").value;
+        let year = document.getElementById("year").value;
+        let firstname = document.getElementById("firstname").value;
+        let surname = document.getElementById("surname").value;
+        let motivation = document.getElementById("motivation").value;
+        if (category === "-1") {
+            alert("Veuillez sélectionner une catégorie");
+        } else if (year === "") {
+            alert("Veuillez entrer une année");
+        } else if (firstname === "") {
+            alert("Veuillez entrer un prénom");
+        } else if (surname === "") {
+            alert("Veuillez entrer un nom");
+        } else if (motivation === "") {
+            alert("Veuillez entrer une motivation");
+        } else {
+            // let url = `http://localhost:3000/laureates/add?firstname=${firstname}&surname=${surname}&motivation=${motivation}&year=${year}&category=${category}`;
+            // fetch(url)
+            //         .then(response => response.json())
+            //         .then((data) => {
+            //                 console.log(data);
+            //             }
+            //         );
+            // let data = {
+            //     firstname: firstname,
+            //     surname: surname,
+            //     motivation: motivation,
+            //     category: category,
+            //     year: year
+            // };
+            // console.log(data);
+            fetch(`http://localhost:3000/laureates/add?firstname=${firstname}&surname=${surname}&motivation=${motivation}&year=${year}&category=${category}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }).then(response => {
+                if (response.status === 200) {
+                    console.log(response);
+                    resultGood.innerHTML = "Lauréat ajouté/modifié";
+                } else {
+                    console.log(response);
+                    resultError.innerHTML = "Erreur lors de l'ajout/modification du lauréat vérifiez bien que l'année existe déjà";
+                }
+            });
+        }
+    });
+</script>

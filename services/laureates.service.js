@@ -257,6 +257,7 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
         let maxId = 0;
         const result = [];
         const verif = [];
+        let stop = false;
         const laureatesL = lireLaureates(prizes);
         prizes.forEach((prize) => {
             result.push(prize);
@@ -279,14 +280,14 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
                             id: newId, 
                             firstname: firstname, 
                             surname: surname, 
-                            motivation: motivation, 
+                            motivation: "\""+motivation+"\"",
                             share: share
                         });
                         verif.push({
-                            id: id, 
+                            id: newId,
                             firstname: firstname, 
                             surname: surname, 
-                            motivation: motivation, 
+                            motivation: "\""+motivation+"\"",
                             share: share
                         });
                     }
@@ -294,11 +295,11 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
             });
         }else if (id != null) {
             result.forEach((prize) => {
-                if (prize.year === year && prize.category === category){    
+                if (prize.year === year && prize.category === category){
                     if (prize.laureates){
                         prize.laureates.forEach((laureate) => {
-                            if (laureate.id === id) {
-                                laureate.motivation = motivation;
+                            if ((laureate.id === id) && !stop) {
+                                laureate.motivation = "\""+motivation+"\"";
                                 if (share != null) {
                                     laureate.share = share;
                                 }
@@ -306,10 +307,44 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
                                     id: id, 
                                     firstname: firstname, 
                                     surname: surname, 
-                                    motivation: motivation, 
+                                    motivation: "\""+motivation+"\"",
                                     share: share
                                 });
+                                stop = true;
+                            } else if ((laureate.id !== id) && !stop){
+                                prize.laureates.push({
+                                    id: id,
+                                    firstname: firstname,
+                                    surname: surname,
+                                    motivation: "\""+motivation+"\"",
+                                    share: share
+                                });
+                                verif.push({
+                                    id: id,
+                                    firstname: firstname,
+                                    surname: surname,
+                                    motivation: "\""+motivation+"\"",
+                                    share: share
+                                });
+                                stop = true;
                             }
+                        });
+                    } else if (!prize.laureates && !stop){
+                        Reflect.deleteProperty(prize,"overallMotivation");
+                        // push une nouvelle propriété laureates dans prize
+                        prize.laureates = [{
+                            id: id,
+                            firstname: firstname,
+                            surname: surname,
+                            motivation: "\""+motivation+"\"",
+                            share: share
+                        }];
+                        verif.push({
+                            id: id,
+                            firstname: firstname,
+                            surname: surname,
+                            motivation: "\""+motivation+"\"",
+                            share: share
                         });
                     }
                 }
@@ -318,9 +353,9 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
         if (verif.length === 0) {
             return callback("Can't create laureates with these paramater (year or category invalid)", null);
         }
-        const finalResult = pagination(req, result);
-        // savePrizes(result);
-        return callback(null, finalResult);
+        // const finalResult = pagination(req, result);
+        savePrizes(result);
+        return callback(null, verif);
     }catch (e){
         console.log("error addLaureats");
         console.log(e);
@@ -332,10 +367,9 @@ module.exports = {
     listerLaureats: listerLaureats,
     lireIdLaureats: lireIdLaureats,
     numberMore1Nobel: numberMore1Nobel,
-    lireLaureates: lireLaureates,
     filterLaureats: filterLaureats,
     deleteLaureats: deleteLaureats,
     editMotivationLaureats: editMotivationLaureats,
     addLaureats: addLaureats,
-    lirePrizes: lirePrizes
+    lirePrizes: lirePrizes,
 }
