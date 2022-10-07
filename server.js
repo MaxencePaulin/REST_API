@@ -51,6 +51,11 @@ app.use((req, res, next) =>{
     next();
 });
 
+// favicon
+app.get("/favicon.ico", (req, res) => {
+    res.sendFile("images/favicon.ico", {root: __dirname});
+});
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/laureates", laureatesRoutes);
@@ -80,9 +85,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("*",(req, res, next) => {
-    if(req.path === "/favicon.ico"){
-        return;
-    }
     const err = new Error("Not Found");
     err.status = 404;
     next(err);
