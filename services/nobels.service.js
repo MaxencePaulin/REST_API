@@ -245,11 +245,12 @@ const allPrizes = (category, year, callback) => {
                 if (prize.category === category) {
                     if (prize.laureates) {
                         prize.laureates.forEach((laureate) => {
-                            resultCat.push({
-                                firstname: laureate.firstname,
-                                surname: laureate.surname,
-                                year: prize.year
-                            });
+                            resultCat.push(prize);
+                            // resultCat.push({
+                            //     firstname: laureate.firstname,
+                            //     surname: laureate.surname,
+                            //     year: prize.year
+                            // });
                         });
                     }
                 }
