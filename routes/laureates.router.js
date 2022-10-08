@@ -110,7 +110,7 @@ router.get("/", list);
  *      parameters:
  *          - in: query
  *            name: page
- *            description: Lumber of the page
+ *            description: Number of the page
  *            required: false
  *            type: integer
  *          - in: query

@@ -1,42 +1,50 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Activitée 1 (web)</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="/api-docs">Afficher la documentation swagger de l'API</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Lauréats
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="/laureates">Afficher tout les lauréats</a>
-                    <a class="dropdown-item" href="/laureates/severalNobels">Afficher les lauréats avec plusieurs prix nobels</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Nobels
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="/nobels/all">Afficher tout les prix nobels (sans pagination)</a>
-                    <a class="dropdown-item" href="/nobels">Afficher le nombre de prix nobels</a>
-                    <a class="dropdown-item" href="/nobels/noNobels">Afficher les années sans prix nobels offerts</a>
-                    <a class="dropdown-item" href="/nobels/year">Affiche le nombre de lauréats par an (vous pouvez trier)</a>
-                    <a class="dropdown-item" href="/nobels/max">Affiche la catégorie avec le plus de lauréats</a>
-                    <a class="dropdown-item" href="/nobels/category">Affiche les catégories de prix nobel</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/laureatesByCategory">Lister les lauréats par catégories</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/addLaureateForm">Ajouter un lauréat</a>
-            </li>
-        </ul>
+        <a class="navbar-brand ml-lg-auto ml-xl-auto" href="/">Activitée 1 (web)</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    <div class="container ml-0">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="/api-docs">Documentation swagger de l'API</a>
+                </li>
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Lauréats
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/laureates">Afficher tout les lauréats</a>
+                        <a class="dropdown-item" href="/laureates/severalNobels">Afficher les lauréats avec plusieurs
+                            prix nobels</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown px-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Nobels
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/nobels/all">Afficher tout les prix nobels (sans pagination)</a>
+                        <a class="dropdown-item" href="/nobels">Afficher le nombre de prix nobels</a>
+                        <a class="dropdown-item" href="/nobels/noNobels">Afficher les années sans prix nobels
+                            offerts</a>
+                        <a class="dropdown-item" href="/nobels/year">Affiche le nombre de lauréats par an (vous pouvez
+                            trier)</a>
+                        <a class="dropdown-item" href="/nobels/max">Affiche la catégorie avec le plus de lauréats</a>
+                        <a class="dropdown-item" href="/nobels/category">Affiche les catégories de prix nobel</a>
+                    </div>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="/laureatesByCategory">Lauréats par catégories</a>
+                </li>
+                <li class="nav-item px-2">
+                    <a class="nav-link" href="/addLaureateForm">Ajouter/Modifier un lauréat</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 <br>
