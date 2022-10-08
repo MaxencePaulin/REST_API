@@ -54,10 +54,6 @@ app.use((req, res, next) =>{
     next();
 });
 
-app.get("/favicon.ico", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "favicon.ico"));
-});
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/laureates", laureatesRoutes);
