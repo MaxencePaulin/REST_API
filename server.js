@@ -9,6 +9,7 @@ const laureatesRoutes = require("./routes/laureates.router.js");
 const nobelsRoutes = require("./routes/nobels.router.js");
 const hbengine = require("express-handlebars");
 const {laureatesByCategory, addLaureateForm} = require("./controllers/nobels.controller.js");
+const path = require("path");
 dotenv.config();
 
 const port = process.env.PORT;
@@ -39,6 +40,8 @@ app.set("view engine", "hbs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, "public")));
+
 // Middleware
 app.use((req, res, next) =>{
     console.log("url: "+req.url);
@@ -49,11 +52,6 @@ app.use((req, res, next) =>{
     console.log("IP: "+
         JSON.stringify(req.ip));
     next();
-});
-
-// favicon
-app.get("/favicon.ico", (req, res) => {
-    res.sendFile("images/favicon.ico", {root: __dirname});
 });
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
