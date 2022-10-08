@@ -251,13 +251,11 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
 const addLaureats = (req, firstname, surname, motivation, share, year, category, callback) => {
     try {
         const prizes = lirePrizes();
-        // console.log(firstname)
-        // if (!validateFirstname(firstname) || !validateSurname(surname) || !validateMotivation(motivation) || !validateYear(year, prizes) || !validateCategory(category)) {
-        //     return callback("You can only add a laureate with firstname (3 char min), surname (3 char min), motivation not empty, year already exist, category exist and work with year", null);
-        // }
-        if (!firstname || !surname || !motivation || !year || !category) {
-            return callback("You can only add a laureate with firstname, surname, motivation, year, category minimum", null);
+        if (!validateFirstname(firstname) || !validateSurname(surname) || !validateMotivation(motivation) || !validateYear(year, prizes) || !validateCategory(category, year, prizes)) {
+            return callback("You can only add a laureate with firstname (3 char min), surname (3 char min), motivation not empty, year already exist, category exist and match with this year", null);
         }
+        firstname = firstname.charAt(0).toUpperCase() + firstname.toLowerCase().slice(1);
+        surname = surname.charAt(0).toUpperCase() + surname.toLowerCase().slice(1);
         let id = null;
         let maxId = 0;
         const result = [];
@@ -271,7 +269,7 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
             if (parseInt(laureate.id) > maxId) {
                 maxId = laureate.id;
             }
-            if (laureate.firstname === firstname && laureate.surname === surname) {
+            if (laureate.firstname.toLowerCase() === firstname.toLowerCase() && laureate.surname.toLowerCase() === surname.toLowerCase()) {
                 id = laureate.id;
             }
         });
@@ -329,8 +327,8 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
                                 }
                                 verif.push({
                                     id: id, 
-                                    firstname: firstname, 
-                                    surname: surname, 
+                                    firstname: laureate.firstname,
+                                    surname: laureate.surname,
                                     motivation: "\""+motivation+"\"",
                                     share: share
                                 });

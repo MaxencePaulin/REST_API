@@ -1,8 +1,17 @@
-const {validator} = require('validator');
+const validator = require('validator');
 
-exports.validateCategory = (category) => {
+exports.validateCategory = (category, year, prizes) => {
     if(validator.isEmpty(category)){
         return false;
+    }
+    if(prizes) {
+        const result = [];
+        prizes.forEach((prize) => {
+            if(prize.year === year && prize.category === category){
+                result.push(prize);
+            }
+        });
+        return result.length > 0;
     }
     return category != -1;
 

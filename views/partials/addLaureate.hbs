@@ -16,23 +16,53 @@
                 <option value="{{this}}">{{this}}</option>
             {{/each}}
         </select>
+        <div class="invalid-feedback">
+            Veuillez sélectionner une catégorie
+        </div>
+        <div class="valid-feedback">
+            C'est valide !
+        </div>
     </div>
     <div class="form-group col-md-6">
         <label for="year">Année :</label>
         <input type="text" class="form-control" id="year" placeholder="Ex: 2021 (L'année doit déjà exister)">
+        <div class="invalid-feedback" id="yearInvalid">
+            Ce champ ne doit pas être vide
+        </div>
+        <div class="valid-feedback">
+            C'est valide !
+        </div>
     </div>
 </div>
 <div class="form-group">
     <label for="firstname">Prénom :</label>
     <input type="text" class="form-control" id="firstname" placeholder="Ex: Maxence">
+    <div class="invalid-feedback">
+        Ce champ ne doit pas être vide et doit fait plus de 3 caractères
+    </div>
+    <div class="valid-feedback">
+        C'est valide !
+    </div>
 </div>
 <div class="form-group">
     <label for="surname">Nom :</label>
     <input type="text" class="form-control" id="surname" placeholder="Ex: Paulin">
+    <div class="invalid-feedback">
+        Ce champ ne doit pas être vide et doit fait plus de 3 caractères
+    </div>
+    <div class="valid-feedback">
+        C'est valide !
+    </div>
 </div>
 <div class="form-group">
     <label for="motivation">Motivation :</label>
     <input type="text" class="form-control" id="motivation" placeholder="Ex: Pour avoir prouvé que la terre est plate.">
+    <div class="invalid-feedback">
+        Ce champ ne doit pas être vide
+    </div>
+    <div class="valid-feedback">
+        C'est valide !
+    </div>
 </div>
 <button type="submit" class="btn btn-primary" id="button">Ajouter/Modifier le lauréat</button>
 <br>
@@ -52,7 +82,13 @@
     let select = document.getElementById("button");
     let resultGood = document.getElementById("resultGood");
     let resultError = document.getElementById("resultError");
-    select.addEventListener("click", () => {
+    select.addEventListener("click", async () => {
+        document.getElementById("yearInvalid").innerHTML = "Ce champ ne doit pas être vide";
+        document.getElementById("category").classList.remove("is-invalid", "is-valid");
+        document.getElementById("year").classList.remove("is-invalid", "is-valid");
+        document.getElementById("firstname").classList.remove("is-invalid", "is-valid");
+        document.getElementById("surname").classList.remove("is-invalid", "is-valid");
+        document.getElementById("motivation").classList.remove("is-invalid", "is-valid");
         resultGood.innerHTML = "";
         resultError.innerHTML = "";
         let category = document.getElementById("category").value;
@@ -60,32 +96,46 @@
         let firstname = document.getElementById("firstname").value;
         let surname = document.getElementById("surname").value;
         let motivation = document.getElementById("motivation").value;
+        let yearExist = [];
+        let url = "http://localhost:3000/nobels/all"
+        await fetch(url)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    yearExist = [];
+                    data.data.result.forEach((element) => {
+                        if (element.year) {
+                            yearExist.push(element.year);
+                        }
+                    });
+                });
+        let verif = 0;
         if (category === "-1") {
-            alert("Veuillez sélectionner une catégorie");
-        } else if (year === "") {
-            alert("Veuillez entrer une année");
-        } else if (firstname === "" || firstname.length <= 3) {
-            alert("Veuillez entrer un prénom de plus de 3 caractères");
-        } else if (surname === "" || surname.length <= 3) {
-            alert("Veuillez entrer un nom de plus de 3 caractères");
-        } else if (motivation === "") {
-            alert("Veuillez entrer une motivation");
-        } else {
-            // let url = `http://localhost:3000/laureates/add?firstname=${firstname}&surname=${surname}&motivation=${motivation}&year=${year}&category=${category}`;
-            // fetch(url)
-            //         .then(response => response.json())
-            //         .then((data) => {
-            //                 console.log(data);
-            //             }
-            //         );
-            // let data = {
-            //     firstname: firstname,
-            //     surname: surname,
-            //     motivation: motivation,
-            //     category: category,
-            //     year: year
-            // };
-            // console.log(data);
+            document.getElementById("category").classList.add("is-invalid");
+            verif++;
+        } else document.getElementById("category").classList.add("is-valid");
+        if (year === "") {
+            document.getElementById("year").classList.add("is-invalid");
+            verif++;
+        } else if (!yearExist.includes(year)) {
+            document.getElementById("yearInvalid").innerHTML = `L'année n'existe pas essayez qu'elle soit comprise entre ${yearExist[yearExist.length - 1]} et ${yearExist[0]}`;
+            document.getElementById("year").classList.add("is-invalid");
+            verif++;
+        } else document.getElementById("year").classList.add("is-valid");
+        if (firstname.length <= 3) {
+            document.getElementById("firstname").classList.add("is-invalid");
+            verif++;
+        } else document.getElementById("firstname").classList.add("is-valid");
+        if (surname.length <= 3) {
+            document.getElementById("surname").classList.add("is-invalid");
+            verif++;
+        } else document.getElementById("surname").classList.add("is-valid");
+        if (motivation === "") {
+            document.getElementById("motivation").classList.add("is-invalid");
+            verif++;
+        } else document.getElementById("motivation").classList.add("is-valid");
+        if (verif === 0) {
             fetch(`http://localhost:3000/laureates/add?firstname=${firstname}&surname=${surname}&motivation=${motivation}&year=${year}&category=${category}`, {
                 method: "POST",
                 headers: {
@@ -93,11 +143,19 @@
                 },
             }).then(response => {
                 if (response.status === 200) {
-                    console.log(response);
-                    resultGood.innerHTML = "Lauréat ajouté/modifié";
+                    response.json().then(data => {
+                        console.log(data)
+                        resultGood.innerHTML = `Le lauréat avec l'id ${data.data[0].id} de prénom et nom ${data.data[0].firstname} ${data.data[0].surname} a bien été ajouté/modifié avec la motivation ${data.data[0].motivation}`;
+                    })
+                    // console.log(response);
+                    // resultGood.innerHTML = "Lauréat ajouté/modifié";
                 } else {
-                    console.log(response);
-                    resultError.innerHTML = "Erreur lors de l'ajout/modification du lauréat vérifiez bien que l'année existe déjà et que la catégorie pour celle-ci existe";
+                    // logger le message du callback d'erreur
+                    response.json().then(data => {
+                        console.log(data);
+                        resultError.append(data.data);
+                    });
+                    resultError.innerHTML = "Erreur lors de l'ajout/modification du lauréat vérifiez bien que l'année existe déjà et que la catégorie pour celle-ci existe. <br>";
                 }
             });
         }

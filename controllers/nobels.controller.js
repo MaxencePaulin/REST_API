@@ -66,7 +66,6 @@ exports.noNobels = (req, res) => {
     });
 }
 exports.all = (req, res) => {
-    console.log("test",req.query.category);
     nobelsService.allPrizes(req.query.category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
