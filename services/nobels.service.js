@@ -55,16 +55,17 @@ const listerNombreNobels = (callback) => {
 const listerCategory = () => {
     try {
         const prizes = lirePrizes();
-        const result = [];
-        prizes.forEach((prize) => {
-            if (prize.category) {
-                let tmp = result.find((c) => c === prize.category);
-                if (!tmp) {
-                    result.push(prize.category);
-                }
-            }
-        });
-        return result;
+        // const result = [];
+        // prizes.forEach((prize) => {
+        //     if (prize.category) {
+        //         let tmp = result.find((c) => c === prize.category);
+        //         if (!tmp) {
+        //             result.push(prize.category);
+        //         }
+        //     }
+        // });
+        const category = priez.map((prize) => prize.category);
+        return  [...new Set(category)];
     }catch (e) {
         console.log("error listerCategory");
         console.log(e);
@@ -76,7 +77,7 @@ const listerCategory = () => {
 const listerCategoryNobels = (req, callback) => {
     try {
         const result = listerCategory();
-        if (result.length === 0) {
+        if (!result || result.length === 0) {
             return callback("No category", null);
         }
         const finalResult = pagination(req, result);
