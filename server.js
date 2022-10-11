@@ -19,7 +19,7 @@ const swaggerOption = {
     swaggerDefinition: (swaggerJsdoc.Options = {
         info: {
             title: "API_REST",
-            description: "API documentation",
+            description: "API de documentation",
             contact: {
                 name: "Maxence PAULIN",
             },

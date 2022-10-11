@@ -77,7 +77,7 @@ const listerCategory = () => {
 const listerCategoryNobels = (req, callback) => {
     try {
         const result = listerCategory();
-        if (result.length === 0) {
+        if (!result || result.length === 0) {
             return callback("No category", null);
         }
         const finalResult = pagination(req, result);

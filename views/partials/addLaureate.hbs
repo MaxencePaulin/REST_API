@@ -5,17 +5,22 @@
         <label for="category">Catégorie :</label>
         {{#unless category}}
             <fieldset disabled>
-                <select id="category" class="form-control">
-                    <option>Aucune catégories trouvé</option>
+                <select id="category" class="form-control is-invalid">
+                    <option value="-1">Aucune catégories trouvé</option>
                 </select>
+                <div class="invalid-feedback">
+                    Aucune catégorie trouvée dans les données
+                </div>
             </fieldset>
         {{/unless}}
-        <select name="category" id="category" class="form-control">
-            <option value="-1">Sélectionnez une catégorie</option>
-            {{#each category}}
-                <option value="{{this}}">{{this}}</option>
-            {{/each}}
-        </select>
+        {{#if category}}
+            <select name="category" id="category" class="form-control">
+                <option value="-1">Sélectionnez une catégorie</option>
+                {{#each category}}
+                    <option value="{{this}}">{{this}}</option>
+                {{/each}}
+            </select>
+        {{/if}}
         <div class="invalid-feedback">
             Veuillez sélectionner une catégorie
         </div>
