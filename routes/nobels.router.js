@@ -1,5 +1,5 @@
 const express = require("express");
-var router = express.Router();
+let router = express.Router();
 const {numberNobels, categoryNobels, 
     NobelsMax, parAn, nobelsInfo, noNobels, all} = require("../controllers/nobels.controller.js");
 

@@ -244,16 +244,7 @@ const allPrizes = (category, callback) => {
         if (category) {
             prizes.forEach((prize) => {
                 if (prize.category === category) {
-                    if (prize.laureates) {
-                        prize.laureates.forEach((laureate) => {
-                            resultCat.push(prize);
-                            // resultCat.push({
-                            //     firstname: laureate.firstname,
-                            //     surname: laureate.surname,
-                            //     year: prize.year
-                            // });
-                        });
-                    }
+                        resultCat.push(prize);
                 }
             });
             return callback(null, {totalResult: resultCat.length, result: resultCat});

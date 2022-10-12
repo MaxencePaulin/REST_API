@@ -1,31 +1,30 @@
 const express = require("express");
-var router = express.Router();
-const {list, afficheInfo,
-    severalNobels, laureatesFilter, deleteLaureates,
+let router = express.Router();
+const {list, severalNobels, laureatesFilter, deleteLaureates,
     editMotivationLaureates, addLaureates} = require("../controllers/laureates.controller.js");
 
-router.get("/id=:id", afficheInfo);
-/**
- * @swagger
- * /laureates/id={id}:
- *   get:
- *      description: firstname and surname of laureates with id = {id} (F2)
- *      tags:
- *          - laureates
- *      parameters:
- *          - in: path
- *            name: id
- *            description: Laureate ID
- *            required: true
- *            type: integer
- *      responses:
- *          '200':
- *              description: Resource updated successfully
- *          '500':
- *              description: Internal server error
- *          '400':
- *              description: Bad request
-*/
+// router.get("/id=:id", afficheInfo);
+// /**
+//  * @swagger
+//  * /laureates/id={id}:
+//  *   get:
+//  *      description: firstname and surname of laureates with id = {id} (F2)
+//  *      tags:
+//  *          - laureates
+//  *      parameters:
+//  *          - in: path
+//  *            name: id
+//  *            description: Laureate ID
+//  *            required: true
+//  *            type: integer
+//  *      responses:
+//  *          '200':
+//  *              description: Resource updated successfully
+//  *          '500':
+//  *              description: Internal server error
+//  *          '400':
+//  *              description: Bad request
+// */
 
 router.get("/severalNobels", severalNobels);
 /**
@@ -98,24 +97,30 @@ router.get("/filter", laureatesFilter);
  *              description: Bad request
 */
 
-router.get("/", list);
+router.get("/:id?", list);
 /**
  * @swagger
- * /laureates:
+ * /laureates/{id}:
  *   get:
  *      description: Used to list all laureates (id, firstname, surname) without duplicate, you can use ?page={number}&limit={number} (F1),
- *                   "totalResult" is the number of laureates which receive prize, without duplicate (F4)
+ *                   "totalResult" is the number of laureates which receive prize, without duplicate (F4).
+ *                   You can enter an id after /laureates/ to display id, firstname and surname of laureates with id = {id} (F2)
  *      tags:
  *          - laureates
  *      parameters:
+ *          - in: path
+ *            name: id
+ *            description: Laureate ID
+ *            required: false
+ *            type: integer
  *          - in: query
  *            name: page
- *            description: Number of the page
+ *            description: Number of the page (work without id)
  *            required: false
  *            type: integer
  *          - in: query
  *            name: limit
- *            description: Limit of result per page
+ *            description: Limit of result per page (work without id)
  *            required: false
  *            type: integer
  *      responses:

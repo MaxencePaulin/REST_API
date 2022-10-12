@@ -1,25 +1,7 @@
 const fs = require("fs");
-const {validateCategory, validateYear, validateMotivation, validateSurname, validateFirstname} = require("../middlewares/laureates.middleware");
-
-const pagination = (req, results) => {
-    if (!req.query.page || req.query.page < 1) {
-        req.query.page = 1;
-    }
-    if (!req.query.limit || req.query.limit < 1) {
-        req.query.limit = 10;
-    }
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const result = results.slice(startIndex, endIndex);
-    if (result.length === 0) {
-        return [];
-    }
-    const nbPage= Math.ceil(results.length / limit);
-    const totalResult = results.length;
-    return {page: page, limit: limit, nbPage: nbPage, totalResult: totalResult, result: result};
-}
+const {validateCategory, validateYear,
+    validateMotivation,
+    validateSurname, validateFirstname} = require("../middlewares/laureates.middleware");
 
 const lirePrizes = () => {
     try {
@@ -41,36 +23,29 @@ const lireLaureates = (prizesL) => {
     prizesL.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
-                    // var tmp = laureatesL.find((l) => l.id === laureate.id);
-                    // if (!tmp) {
-                    //     laureatesL.push({
-                    //         id: laureate.id,
-                    //         firstname: laureate.firstname,
-                    //         surname: laureate.surname
-                    //     });
-                    // }
-                    laureatesL.push({
-                        id: laureate.id,
-                        firstname: laureate.firstname,
-                        surname: laureate.surname
-                    });
+                    let tmp = laureatesL.find((l) => l.id === laureate.id);
+                    if (!tmp) {
+                        laureatesL.push({
+                            id: laureate.id,
+                            firstname: laureate.firstname,
+                            surname: laureate.surname
+                        });
+                    }
                 });
             } 
     });
-    return [...new Set(laureatesL)];
-        
+    return laureatesL;
 } 
 
 // F1 et F4 ?
-const listerLaureats = (req, callback) => {
+const listerLaureats = (callback) => {
     try {
         const prizesL = lirePrizes();
         const laureatesL = lireLaureates(prizesL);
-        const result = pagination(req, laureatesL);
-        if (result.length === 0) {
+        if (laureatesL.length === 0) {
             return callback("No result", null);
         }
-        return callback(null, result);
+        return callback(null, laureatesL);
     } catch (e) {
         console.log("error");
         console.log(e);
@@ -79,9 +54,8 @@ const listerLaureats = (req, callback) => {
 };
 
 // F2
-const lireIdLaureats = (req, callback) => {
+const lireIdLaureats = (id, callback) => {
     try {
-        const id = req.params.id;
         const prizesL = lirePrizes();
         const laureatesL = lireLaureates(prizesL);
         const result = [];
@@ -91,7 +65,7 @@ const lireIdLaureats = (req, callback) => {
             }
         });
         if (result[0] == null) {
-            return callback("No result", null);
+            return callback("No result, please enter a valid id (integer)", null);
         }
         return callback(null, result);
     }catch (e) {
@@ -102,7 +76,7 @@ const lireIdLaureats = (req, callback) => {
 }
 
 // F5
-const numberMore1Nobel = (req, callback) => {
+const numberMore1Nobel = (callback) => {
     try {
         const prizes = lirePrizes();
         const laureatesL = [];
@@ -138,11 +112,10 @@ const numberMore1Nobel = (req, callback) => {
                 });
             }
         });
-        const finalResult = pagination(req, result);
-        if (finalResult.length === 0) {
+        if (result.length === 0) {
             return callback("No result", null);
         }
-        return callback(null, finalResult);
+        return callback(null, result);
     }catch (e) {
         console.log("error");
         console.log(e);
@@ -151,31 +124,31 @@ const numberMore1Nobel = (req, callback) => {
 }
 
 // F12
-const filterLaureats = (req, callback) => {
+const filterLaureats = (firstname, surname, category, callback) => {
     try {
         const prizes = lirePrizes();
-        var result = [];
+        let result = [];
         prizes.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
-                    var tmp = result.find((l) => l.id === laureate.id);
+                    let tmp = result.find((l) => l.id === laureate.id);
                     if (!tmp) {
-                        if ((laureate.firstname != null && laureate.firstname === req.query.firstname)
-                            || (laureate.surname !=null && laureate.surname === req.query.surname)
-                            || (prize.category !=null &&  prize.category === req.query.category)) {
+                        if ((laureate.firstname != null && laureate.firstname === firstname)
+                            || (laureate.surname !=null && laureate.surname === surname)
+                            || (prize.category !=null &&  prize.category === category)) {
                             result.push(laureate);
                         }
                     }
                 });
             } 
         });
-        const finalResult = pagination(req, result);
-        if (finalResult.length === 0) {
+        console.log(result);
+        if (result.length === 0) {
             return callback("No result or invalid parameter, do"
                 +" filter?firstname=test or filter?surname=test"
                 +" or filter?category=medicine with valid values", null);
         }
-        return callback(null, finalResult);
+        return callback(null, result);
     }catch (e) {
         console.log("error");
         console.log(e);
@@ -263,6 +236,7 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
         surname = surname.charAt(0).toUpperCase() + surname.toLowerCase().slice(1);
         let id = null;
         let maxId = 0;
+        let newId;
         const result = [];
         const verif = [];
         let stop = false;
