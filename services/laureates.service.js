@@ -214,7 +214,7 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
             }
         });
         if (result.length === 0) {
-            return callback("Laureate doesn't exist", null);
+            return callback("Laureate not found (doesn't exist or doesn't match with these parameters)", null);
         }
 //        savePrizes(prizes);
         return callback(null, result);
@@ -226,7 +226,7 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
 }
 
 // F15
-const addLaureats = (req, firstname, surname, motivation, share, year, category, callback) => {
+const addLaureats = (firstname, surname, motivation, share, year, category, callback) => {
     try {
         const prizes = lirePrizes();
         if (!validateFirstname(firstname) || !validateSurname(surname) || !validateMotivation(motivation) || !validateYear(year, prizes) || !validateCategory(category, year, prizes)) {

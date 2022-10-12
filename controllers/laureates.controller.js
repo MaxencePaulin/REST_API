@@ -6,7 +6,6 @@ const {pagination} = require("../utils/page");
 
 // GET 
 exports.list = (req, res) => {
-    console.log(req.params.id)
     if (req.params.id && (typeof req.params.id != 'undefined'
         && req.params.id !== "{id}"
         && req.params.id !== "undefined")) {
@@ -20,15 +19,20 @@ exports.list = (req, res) => {
             return res.status(200).send({ success: 1, data: results });
         });
     }
-    laureatesService.listerLaureats((error, results) => {
-        if (error) {
-            return res.status(400).send({ success: 0, data: error });
-        }
-        console.log("Success");
-        // 200 => OK
-        results = pagination(req, results);
-        return res.status(200).send({ success: 1, data: results });
-    });
+    else {
+        laureatesService.listerLaureats((error, results) => {
+            if (error) {
+                return res.status(400).send({ success: 0, data: error });
+            }
+            console.log("Success");
+            // 200 => OK
+            results = pagination(req, results);
+            if (results.length === 0) {
+                return res.status(400).send({ success: 0, data: "Aucun résultat avec cette page" });
+            }
+            return res.status(200).send({ success: 1, data: results });
+        });
+    }
 };
 // exports.afficheInfo = (req, res, next) => {
 //     if (!req.params.id) {
@@ -77,7 +81,10 @@ exports.laureatesFilter = (req, res) => {
 }
 
 exports.deleteLaureates = (req, res) => {
-    laureatesService.deleteLaureats(req.query.id, req.query.year, req.query.category, (error, results) => {
+    const id = req.query.id;
+    const year = req.query.year;
+    const category = req.query.category;
+    laureatesService.deleteLaureats(id, year, category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
@@ -87,7 +94,11 @@ exports.deleteLaureates = (req, res) => {
 }
 
 exports.editMotivationLaureates = (req, res) => {
-    laureatesService.editMotivationLaureats(req.query.motivation, req.query.id, req.query.year, req.query.category, (error, results) => {
+    const motivation = req.query.motivation;
+    const id = req.query.id;
+    const year = req.query.year;
+    const category = req.query.category;
+    laureatesService.editMotivationLaureats(motivation, id, year, category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
@@ -97,8 +108,14 @@ exports.editMotivationLaureates = (req, res) => {
 }
 
 exports.addLaureates = (req, res) => {
-    laureatesService.addLaureats(req, req.query.firstname, req.query.surname,
-            req.query.motivation, req.query.share, req.query.year, req.query.category, (error, results) => {
+    const firstname = req.query.firstname;
+    const surname = req.query.surname;
+    const motivation = req.query.motivation;
+    const share = req.query.share;
+    const year = req.query.year;
+    const category = req.query.category;
+    laureatesService.addLaureats(firstname, surname, motivation, share, 
+            year, category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
