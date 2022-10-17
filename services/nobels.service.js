@@ -101,9 +101,8 @@ const listerCategoryNobelsMax = (callback) => {
 }
 
 // F8 && F11
-// Pour chaque année, indiquez combien de lauréats avaient remporté un prix nobel.
 // Possibilité de sort laureates ou -laureates pour trier par ordre ascendant ou descendant
-const listerNombreNobelsParAn = (callback) => {
+const listerNombreNobelsParAn = (sort, callback) => {
     try {
         const prizes = lirePrizes();
         const result = [];
@@ -120,9 +119,9 @@ const listerNombreNobelsParAn = (callback) => {
                 }
             }
         });
-        if (req.query.sort === "laureates") {
+        if (sort === "laureates") {
             result.sort((a, b) => a.nbLaureates - b.nbLaureates);
-        } else if (req.query.sort === "-laureates") {
+        } else if (sort === "-laureates") {
             result.sort((a, b) => b.nbLaureates - a.nbLaureates);
         }
         if (result.length === 0) {

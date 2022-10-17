@@ -65,7 +65,7 @@ const lireIdLaureats = (id, callback) => {
             }
         });
         if (result[0] == null) {
-            return callback("No result, please enter a valid id (integer)", null);
+            return callback("Not found, please enter a valid id (integer) if you search a laureate", null);
         }
         return callback(null, result);
     }catch (e) {
@@ -164,6 +164,7 @@ const deleteLaureats = (id, year, category, callback) => {
         const prizes = lirePrizes();
         const removeLaureate = [];
         let tot = 0;
+        let count=0;
         if (!id || !year || !category) {
             return callback("You can only delete a laureate by id, year, and category", null);
         }
@@ -171,20 +172,40 @@ const deleteLaureats = (id, year, category, callback) => {
         prizes.forEach((prize) => {
             if (prize.laureates){
                 prize.laureates.forEach((laureate) => {
-                    if (laureate.id !== id || prize.year !== year || prize.category !== category) {
-                        result.push({
-                            year: prize.year,
-                            category: prize.category,
-                            laureates: [laureate]
-                        });
-                    }else {
-                        removeLaureate.push(laureate);
+                    if (result.find((p) => p.year === prize.year && p.category === prize.category) == null) {
+                        if (laureate.id !== id || prize.year !== year || prize.category !== category) {
+                            result.push({
+                                year: prize.year,
+                                category: prize.category,
+                                laureates: [laureate]
+                            });
+                        } else {
+                            removeLaureate.push(laureate);
+                        }
+                        tot++;
+                    } else if (result.find((p) => p.year === prize.year && p.category === prize.category)){
+                        if (laureate.id !== id || prize.year !== year || prize.category !== category) {
+                            result.forEach((p) => {
+                                if (p.year === prize.year && p.category === prize.category) {
+                                    p.laureates.push(laureate);
+                                }
+                            });
+                        } else {
+                            removeLaureate.push(laureate);
+                        }
+                        tot++;
                     }
-                    tot++;
                 });
             }
         });
-        if (result.length === tot) {
+        result.forEach((p) => {
+            if (p.laureates) {
+                p.laureates.forEach((l) => {
+                    count++
+                });
+            }
+        });
+        if (count === tot) {
             return callback("Laureate doesn't exist or don't match with these parameters", null);
         }
 //        savePrizes(result);

@@ -42,7 +42,8 @@ exports.NobelsMax = (req, res) => {
 }
 
 exports.parAn = (req, res) => {
-    nobelsService.listerNombreNobelsParAn((error, results) => {
+    const sort = req.query.sort;
+    nobelsService.listerNombreNobelsParAn(sort,(error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
