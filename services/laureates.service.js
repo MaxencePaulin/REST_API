@@ -131,18 +131,23 @@ const filterLaureats = (firstname, surname, category, callback) => {
         prizes.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
-                    let tmp = result.find((l) => l.id === laureate.id);
-                    if (!tmp) {
-                        if ((laureate.firstname != null && laureate.firstname === firstname)
-                            || (laureate.surname !=null && laureate.surname === surname)
-                            || (prize.category !=null &&  prize.category === category)) {
-                            result.push(laureate);
-                        }
+                    if ((laureate.firstname != null && laureate.firstname === firstname)
+                        || (laureate.surname !=null && laureate.surname === surname)
+                        || (prize.category !=null &&  prize.category === category)) {
+                        // result.push(laureate);
+                        result.push({
+                            id : laureate.id,
+                            firstname : laureate.firstname,
+                            surname : laureate.surname,
+                            category : prize.category,
+                            year : prize.year,
+                            motivation : laureate.motivation,
+                            share : laureate.share
+                        })
                     }
                 });
             } 
         });
-        console.log(result);
         if (result.length === 0) {
             return callback("No result or invalid parameter, do"
                 +" filter?firstname=test or filter?surname=test"
