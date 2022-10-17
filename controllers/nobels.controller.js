@@ -3,6 +3,7 @@ dotenv.config();
 // const datasource = process.env.DATASOURCE;
 const nobelsService = require("../services/nobels.service.js");
 const {listerCategory} = require("../services/nobels.service");
+const {pagination} = require("../utils/page");
 
 // GET 
 exports.numberNobels = (req, res) => {
@@ -17,11 +18,15 @@ exports.numberNobels = (req, res) => {
 };
 
 exports.categoryNobels = (req, res) => {
-    nobelsService.listerCategoryNobels(req, (error, results) => {
+    nobelsService.listerCategoryNobels((error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
         console.log("Success");
+        results = pagination(req, results);
+        if(results.length === 0) {
+            return res.status(400).send({ success: 0, data: "Aucun résultat avec cette page"});
+        }
         return res.status(200).send({ success: 1, data: results});
     });
 }
@@ -37,17 +42,22 @@ exports.NobelsMax = (req, res) => {
 }
 
 exports.parAn = (req, res) => {
-    nobelsService.listerNombreNobelsParAn(req, (error, results) => {
+    nobelsService.listerNombreNobelsParAn((error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
         console.log("Success");
+        results = pagination(req, results);
+        if (results.length === 0) {
+            return res.status(400).send({ success: 0, data: "Aucun résultat avec cette page"});
+        }
         return res.status(200).send({ success: 1, data: results});
     });
 }
 
 exports.nobelsInfo = (req, res) => {
-    nobelsService.afficheNobelsInfo(req, (error, results) => {
+    const id = req.params.id;
+    nobelsService.afficheNobelsInfo(id, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
@@ -57,11 +67,15 @@ exports.nobelsInfo = (req, res) => {
 }
 
 exports.noNobels = (req, res) => {
-    nobelsService.listerAnneeSansNobel(req, (error, results) => {
+    nobelsService.listerAnneeSansNobel((error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
         }
         console.log("Success");
+        results = pagination(req, results);
+        if (results.length === 0) {
+            return res.status(400).send({ success: 0, data: "Aucun résultat avec cette page"});
+        }
         return res.status(200).send({ success: 1, data: results});
     });
 }

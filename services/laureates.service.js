@@ -355,7 +355,6 @@ const addLaureats = (req, firstname, surname, motivation, share, year, category,
         if (verif.length === 0) {
             return callback("Can't create laureates with these paramater (year or category invalid)", null);
         }
-        // const finalResult = pagination(req, result);
         // savePrizes(result);
         return callback(null, verif);
     }catch (e){
