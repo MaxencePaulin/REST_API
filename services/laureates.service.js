@@ -278,7 +278,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                 id = laureate.id;
             }
         });
-        // if id is null, it means its a new laureate else, laureate already exist
+        // if id is null, it means it's a new laureate else, laureate already exist
         if (id === null) {
             maxId++;
             newId = maxId.toString();

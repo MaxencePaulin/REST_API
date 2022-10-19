@@ -119,6 +119,7 @@ const listerNombreNobelsParAn = (sort, callback) => {
                 }
             }
         });
+        // can't put "+laureates" in several navigator, so I did only "laureates"
         if (sort === "laureates") {
             result.sort((a, b) => a.nbLaureates - b.nbLaureates);
         } else if (sort === "-laureates") {
@@ -202,7 +203,7 @@ const listerAnneeSansNobel = (callback) => {
     }
 }
 
-// vues
+// vues donc a ne pas prendre en compte pour les fonctionnalités de F1 à F15
 const allPrizes = (category, callback) => {
     try {
         const dataBuffer = fs.readFileSync("prize.json");
