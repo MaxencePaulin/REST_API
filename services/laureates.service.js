@@ -278,11 +278,13 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                 id = laureate.id;
             }
         });
+        // if id is null, it means its a new laureate else, laureate already exist
         if (id === null) {
             maxId++;
             newId = maxId.toString();
             result.forEach((prize) => {
                 if (prize.year === year && prize.category === category){
+                    // if we the same year and the same category, we add the laureate
                     if (prize.laureates && !stop){
                         prize.laureates.push({
                             id: newId, 
@@ -300,6 +302,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                         });
                         stop = true;
                     } else if (!prize.laureates && !stop) {
+                        // else if we don't have laureates, we create the array and add the laureate
                         Reflect.deleteProperty(prize, "overallMotivation");
                         // push une nouvelle propriété laureates dans prize
                         prize.laureates = [{
@@ -321,11 +324,13 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                 }
             });
         }else if (id != null) {
+            // if laureate already exist, we add the laureate to the prize with the id of this laureate
             result.forEach((prize) => {
                 if (prize.year === year && prize.category === category){
                     if (prize.laureates && !stop){
                         prize.laureates.forEach((laureate) => {
                             if ((laureate.id === id) && !stop) {
+                                // if we have already this laureate for this year and this category we edit the motivation
                                 laureate.motivation = "\""+motivation+"\"";
                                 if (share != null) {
                                     laureate.share = share;
@@ -339,6 +344,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                                 });
                                 stop = true;
                             } else if ((laureate.id !== id) && !stop){
+                                //else if we don't have this laureate for this year and this category, we add the laureate
                                 prize.laureates.push({
                                     id: id,
                                     firstname: firstname,
@@ -357,6 +363,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                             }
                         });
                     } else if (!prize.laureates && !stop){
+                        // else if we don't have laureates, we create the array and add the laureate
                         Reflect.deleteProperty(prize,"overallMotivation");
                         // push une nouvelle propriété laureates dans prize
                         prize.laureates = [{
@@ -378,6 +385,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                 }
             });
         }
+        // if verif is empty, it means we didn't add the laureate (year and category doesn't match together)
         if (verif.length === 0) {
             return callback("Can't create laureates with these paramater (year or category invalid)", null);
         }
