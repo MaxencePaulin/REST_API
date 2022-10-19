@@ -145,7 +145,7 @@ const afficheNobelsInfo = (id, callback) => {
             if (prize.laureates) {
                 prize.laureates.forEach((laureate) => {
                     if (laureate.id === id) {
-                        var tmp = result.find((l) => l.id === laureate.id);
+                        let tmp = result.find((l) => l.id === laureate.id);
                         if (!tmp) {
                             result.push({
                                 id: laureate.id,

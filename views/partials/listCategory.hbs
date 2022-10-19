@@ -1,6 +1,5 @@
 <h3>Afficher les lauréats selon la catégorie (prénom, nom, année):</h3>
 
-<!--<form name="refresh" method=GET action="/laureatesByCategory">-->
 <div class="form-row">
     <div class="form-group col-md-6">
         <label for="category">Catégorie :</label>
@@ -24,8 +23,6 @@
         {{/if}}
     </div>
 </div>
-<!--    <input type="submit" value="Submit">-->
-<!--</form>-->
 
 <br>
 <div class="row">
@@ -35,38 +32,13 @@
     </div>
 </div>
 
-        <!--{{#if data.result}}-->
-<!--    <div class="row">-->
-<!--        <div class="col-12">-->
-<!--            <table class="table table-striped">-->
-<!--                <thead>-->
-<!--                    <tr>-->
-<!--                        <th scope="col">Firstname</th>-->
-<!--                        <th scope="col">Surname</th>-->
-<!--                        <th scope="col">Year</th>-->
-<!--                    </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-        <!--                    {{#each data.result}}-->
-<!--                        <tr>-->
-<!--                            <td>{{this.firstname}}</td>-->
-<!--                            <td>{{this.surname}}</td>-->
-<!--                            <td>{{this.year}}</td>-->
-<!--                        </tr>-->
-        <!--                    {{/each}}-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-<!--    </div>-->
-        <!--{{/if}}-->
-
 <script>
     let select = document.getElementById("category");
     select.addEventListener("change", () => {
         let index = select.selectedIndex;
         let option = select.options[index];
         let value = option.value;
-        if (value != -1) {
+        if (parseInt(value) !== -1) {
             let url = "http://localhost:3000/nobels/all?category=" + value;
             fetch(url)
                     .then((response) => response.json())

@@ -13,7 +13,7 @@ exports.validateCategory = (category, year, prizes) => {
         });
         return result.length > 0;
     }
-    return category != -1;
+    return true;
 
 }
 

@@ -205,7 +205,7 @@ const deleteLaureats = (id, year, category, callback) => {
         });
         result.forEach((p) => {
             if (p.laureates) {
-                p.laureates.forEach((l) => {
+                p.laureates.forEach(() => {
                     count++
                 });
             }
@@ -387,7 +387,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
         }
         // if verif is empty, it means we didn't add the laureate (year and category doesn't match together)
         if (verif.length === 0) {
-            return callback("Can't create laureates with these paramater (year or category invalid)", null);
+            return callback("Can't create laureates with these parameters (year or category invalid)", null);
         }
         // savePrizes(result);
         return callback(null, verif);

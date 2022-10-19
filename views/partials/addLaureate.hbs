@@ -79,11 +79,6 @@
 </p>
 
 <script>
-    // des que le bouton est pressé,regarder si la valeur de year est dans la base de donnée
-    // - si oui, regarder si le prénom et nom existe déjà
-    // - si oui, modifier la motivation
-    // - si non, ajouter le lauréat
-    // - si non, afficher un message d'erreur
     let select = document.getElementById("button");
     let resultGood = document.getElementById("resultGood");
     let resultError = document.getElementById("resultError");
@@ -152,10 +147,7 @@
                         console.log(data)
                         resultGood.innerHTML = `Le lauréat avec l'id ${data.data[0].id} de prénom et nom ${data.data[0].firstname} ${data.data[0].surname} a bien été ajouté/modifié avec la motivation ${data.data[0].motivation}`;
                     })
-                    // console.log(response);
-                    // resultGood.innerHTML = "Lauréat ajouté/modifié";
                 } else {
-                    // logger le message du callback d'erreur
                     response.json().then(data => {
                         console.log(data);
                         resultError.append(data.data);
