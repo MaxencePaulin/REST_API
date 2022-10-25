@@ -64,9 +64,12 @@ exports.severalNobels = (req, res) => {
 };
 
 exports.laureatesFilter = (req, res) => {
-    const firstname = req.query.firstname;
-    const surname = req.query.surname;
-    const category = req.query.category;
+    const firstname = typeof req.query.firstname === "undefined" ? "" :
+        req.query.firstname === "undefined" ? "" : req.query.firstname;
+    const surname = typeof req.query.surname === "undefined" ? "" :
+        req.query.surname === "undefined" ? "" : req.query.surname;
+    const category = typeof req.query.category === "undefined" ? "" :
+        req.query.category === "undefined" ? "" : req.query.category;
     laureatesService.filterLaureats(firstname, surname, category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });

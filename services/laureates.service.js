@@ -131,9 +131,15 @@ const filterLaureats = (firstname, surname, category, callback) => {
         prizes.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
-                    if ((laureate.firstname != null && laureate.firstname === firstname)
-                        || (laureate.surname !=null && laureate.surname === surname)
-                        || (prize.category !=null &&  prize.category === category)) {
+                    // if value's type is undefined or value it s undefined put a empty string for the filter with toLowerCase()
+                    let f = typeof laureate.firstname === "undefined" ? "" : laureate.firstname === "undefined" ? "" : laureate.firstname;
+                    let s = typeof laureate.surname === "undefined" ? "" : laureate.surname === "undefined" ? "" : laureate.surname;
+                    let c = typeof prize.category === "undefined" ? "" : prize.category === "undefined" ? "" : prize.category;
+                    // console.log(f);
+                    // console.log(firstname)
+                    if ((f !== "" && f.toLowerCase() === firstname.toLowerCase())
+                        || (s !== "" && s.toLowerCase() === surname.toLowerCase())
+                        || (c !== "" &&  c.toLowerCase() === category.toLowerCase())) {
                         // result.push(laureate);
                         result.push({
                             id : laureate.id,
