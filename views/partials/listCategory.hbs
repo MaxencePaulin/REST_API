@@ -65,11 +65,11 @@
                                 prize.laureates.forEach((laureate) => {
                                     let tr = document.createElement("tr");
                                     let td1 = document.createElement("td");
-                                    td1.innerHTML = laureate.firstname;
+                                    td1.innerHTML = laureate.firstname === undefined ? "" : laureate.firstname;
                                     let td2 = document.createElement("td");
-                                    td2.innerHTML = laureate.surname;
+                                    td2.innerHTML = laureate.surname === undefined ? "" : laureate.surname;
                                     let td3 = document.createElement("td");
-                                    td3.innerHTML = prize.year;
+                                    td3.innerHTML = prize.year === undefined ? "" : prize.year;
                                     tr.appendChild(td1);
                                     tr.appendChild(td2);
                                     tr.appendChild(td3);
