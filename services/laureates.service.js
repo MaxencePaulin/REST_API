@@ -201,6 +201,8 @@ const deleteLaureats = (id, year, category, callback) => {
                         tot++;
                     }
                 });
+            } else {
+                result.push(prize);
             }
         });
         result.forEach((p) => {

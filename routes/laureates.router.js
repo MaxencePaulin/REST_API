@@ -132,10 +132,10 @@ router.get("/:id?", list);
  *              description: Bad request
 */
 
-router.post("/add", addLaureates);
+router.post("/", addLaureates);
 /**
  * @swagger
- * /laureates/add:
+ * /laureates:
  *   post:
  *      description: Add a new laureate to a given year and category data. (F15)
  *      tags:
@@ -191,10 +191,10 @@ router.post("/add", addLaureates);
 */
 
 
-router.put("/editMotivation", editMotivationLaureates);
+router.put("/", editMotivationLaureates);
 /**
  * @swagger
- * /laureates/editMotivation:
+ * /laureates:
  *   put:
  *      description: Used to edit motivation of a laureate by id, year, and category (F14)
  *      tags:
@@ -229,10 +229,10 @@ router.put("/editMotivation", editMotivationLaureates);
  *              description: Bad request
 */
 
-router.delete("/delete", deleteLaureates);
+router.delete("/", deleteLaureates);
 /**
  * @swagger
- * /laureates/delete:
+ * /laureates:
  *   delete:
  *      description: Used to delete a laureate by id, year, and category (F13)
  *      tags:

@@ -136,7 +136,7 @@
             verif++;
         } else document.getElementById("motivation").classList.add("is-valid");
         if (verif === 0) {
-            fetch(`http://localhost:3000/laureates/add?firstname=${firstname}&surname=${surname}&motivation=${motivation}&year=${year}&category=${category}`, {
+            fetch(`http://localhost:3000/laureates?firstname=${firstname}&surname=${surname}&motivation=${motivation}&year=${year}&category=${category}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
