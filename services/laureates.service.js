@@ -371,7 +371,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                             }
                         });
                     } else if (!prize.laureates && !stop){
-                        // else if we don't have laureates, we create the array and add the laureate
+                        // else if we don't have laureates, we delete overallMotion and create the array for laureates and add the laureate
                         Reflect.deleteProperty(prize,"overallMotivation");
                         // push une nouvelle propriété laureates dans prize
                         prize.laureates = [{
