@@ -1,5 +1,7 @@
 # REST_API (projet web)
 
+## <font color="red">**IMPORTANT** : ajouter un "PORT=xxxx" (en remplacant "xxxx" par le numéro d'un port) dans un nouveau fichier ".env" et executer "npm i" dans un terminal pour faire fonctionner le projet !</font>
+
 ## 29/09/2022
     
 - initialisation du github et du projet
@@ -19,3 +21,7 @@
 ## du 20/10/2022 au 26/10/2022
 
 - dernières vérifications, gestions d'erreurs, optimisations du code et dépot final
+
+## 27/10/2022
+
+- fait quelques améliorations, et ajoute des commentaires supplémentaires avant d'envoyer le projet

@@ -1,6 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-// const datasource = process.env.DATASOURCE;
 const nobelsService = require("../services/nobels.service.js");
 const {listerCategory} = require("../services/nobels.service");
 const {pagination} = require("../utils/page");

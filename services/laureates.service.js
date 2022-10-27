@@ -1,7 +1,7 @@
 const fs = require("fs");
 const {validateCategory, validateYear,
-    validateMotivation,
-    validateSurname, validateFirstname} = require("../middlewares/laureates.middleware");
+    validateSurname, validateMotivation, validateFirstname,
+    validateShare, validateId} = require("../middlewares/laureates.middleware");
 
 const lirePrizes = () => {
     try {
@@ -131,7 +131,7 @@ const filterLaureats = (firstname, surname, category, callback) => {
         prizes.forEach((prize) => {
             if (prize.laureates){  
                 prize.laureates.forEach((laureate) => {
-                    // if value's type is undefined or value it s undefined put a empty string for the filter with toLowerCase()
+                    // if value's type is undefined or value it s undefined put an empty string for the filter with toLowerCase()
                     let f = typeof laureate.firstname === "undefined" ? "" : laureate.firstname === "undefined" ? "" : laureate.firstname;
                     let s = typeof laureate.surname === "undefined" ? "" : laureate.surname === "undefined" ? "" : laureate.surname;
                     let c = typeof prize.category === "undefined" ? "" : prize.category === "undefined" ? "" : prize.category;
@@ -145,8 +145,8 @@ const filterLaureats = (firstname, surname, category, callback) => {
                             id : laureate.id,
                             firstname : laureate.firstname,
                             surname : laureate.surname,
-                            category : prize.category,
                             year : prize.year,
+                            category : prize.category,
                             motivation : laureate.motivation,
                             share : laureate.share
                         })
@@ -176,8 +176,9 @@ const deleteLaureats = (id, year, category, callback) => {
         const removeLaureate = [];
         let tot = 0;
         let count=0;
-        if (!id || !year || !category) {
-            return callback("You can only delete a laureate by id, year, and category", null);
+        if (!validateId(id, prizes) || !validateYear(year, prizes) || !validateCategory(category, null, prizes)) {
+            return callback("You can only delete a laureate by id already existent, year already existent, " +
+                "and category already existent (all parametre should match)", null);
         }
         const result = [];
         prizes.forEach((prize) => {
@@ -221,7 +222,7 @@ const deleteLaureats = (id, year, category, callback) => {
         if (count === tot) {
             return callback("Laureate doesn't exist or don't match with these parameters", null);
         }
-//        savePrizes(result);
+        savePrizes(result);
         return callback(null, removeLaureate);
     }catch (e) {
         console.log("error");
@@ -233,8 +234,9 @@ const deleteLaureats = (id, year, category, callback) => {
 const editMotivationLaureats = (motivation, id, year, category, callback) => {
     try {
         const prizes = lirePrizes();
-        if (!motivation || !id || !year || !category) {
-            return callback("You can only edit motivation of a laureate by id, year, and category", null);
+        if (!validateMotivation(motivation) || !validateId(id, prizes) || !validateYear(year, prizes) || !validateCategory(category, year, prizes)) {
+            return callback("You can only edit motivation of a laureate with motivation not empty, id already existent, " +
+                "year already existent, and category already existent (all parameters should match)", null);
         }
         const result = [];
         prizes.forEach((prize) => {
@@ -250,7 +252,7 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
         if (result.length === 0) {
             return callback("Laureate not found (doesn't exist or doesn't match with these parameters)", null);
         }
-//        savePrizes(prizes);
+        savePrizes(prizes);
         return callback(null, result);
     }catch (e) {
         console.log("error");
@@ -263,8 +265,11 @@ const editMotivationLaureats = (motivation, id, year, category, callback) => {
 const addLaureats = (firstname, surname, motivation, share, year, category, callback) => {
     try {
         const prizes = lirePrizes();
-        if (!validateFirstname(firstname) || !validateSurname(surname) || !validateMotivation(motivation) || !validateYear(year, prizes) || !validateCategory(category, year, prizes)) {
-            return callback("You can only add a laureate with firstname (3 char min), surname (3 char min), motivation not empty, year already exist, category exist and match with this year", null);
+        if (!validateFirstname(firstname) || !validateSurname(surname) || !validateMotivation(motivation) || !validateYear(year, prizes)
+            || !validateCategory(category, year, prizes) || !validateShare(share)) {
+            return callback("You can only add a laureate with firstname (3 char min), surname (3 char min), " +
+                "motivation not empty, year already exist, category exist and match with this year. " +
+                "If you want add share propriety you should put an integer > 0.", null);
         }
         firstname = firstname.charAt(0).toUpperCase() + firstname.toLowerCase().slice(1);
         surname = surname.charAt(0).toUpperCase() + surname.toLowerCase().slice(1);
@@ -295,16 +300,18 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                     // if we the same year and the same category, we add the laureate
                     if (prize.laureates && !stop){
                         prize.laureates.push({
-                            id: newId, 
-                            firstname: firstname, 
-                            surname: surname, 
+                            id: newId,
+                            firstname: firstname,
+                            surname: surname,
                             motivation: "\""+motivation+"\"",
                             share: share
                         });
                         verif.push({
                             id: newId,
-                            firstname: firstname, 
-                            surname: surname, 
+                            firstname: firstname,
+                            surname: surname,
+                            year: prize.year,
+                            category: prize.category,
                             motivation: "\""+motivation+"\"",
                             share: share
                         });
@@ -317,14 +324,16 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                             id: newId,
                             firstname: firstname,
                             surname: surname,
-                            motivation: "\"" + motivation + "\"",
+                            motivation: "\""+motivation+"\"",
                             share: share
                         }];
                         verif.push({
                             id: newId,
                             firstname: firstname,
                             surname: surname,
-                            motivation: "\"" + motivation + "\"",
+                            year: prize.year,
+                            category: prize.category,
+                            motivation: "\""+motivation+"\"",
                             share: share
                         });
                         stop = true;
@@ -336,23 +345,22 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
             result.forEach((prize) => {
                 if (prize.year === year && prize.category === category){
                     if (prize.laureates && !stop){
+                        let exist = prize.laureates.find((l) => { return l.id === id });
                         prize.laureates.forEach((laureate) => {
-                            if ((laureate.id === id) && !stop) {
-                                // if we have already this laureate for this year and this category we edit the motivation
+                            if (exist && laureate.id === id && !stop) {
+                                laureate.share = share;
                                 laureate.motivation = "\""+motivation+"\"";
-                                if (share != null) {
-                                    laureate.share = share;
-                                }
                                 verif.push({
-                                    id: id, 
-                                    firstname: laureate.firstname,
-                                    surname: laureate.surname,
+                                    id: id,
+                                    firstname: firstname,
+                                    surname: surname,
+                                    year: prize.year,
+                                    category: prize.category,
                                     motivation: "\""+motivation+"\"",
                                     share: share
                                 });
                                 stop = true;
-                            } else if ((laureate.id !== id) && !stop){
-                                //else if we don't have this laureate for this year and this category, we add the laureate
+                            } else if (!exist && !stop) {
                                 prize.laureates.push({
                                     id: id,
                                     firstname: firstname,
@@ -364,6 +372,8 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                                     id: id,
                                     firstname: firstname,
                                     surname: surname,
+                                    year: prize.year,
+                                    category: prize.category,
                                     motivation: "\""+motivation+"\"",
                                     share: share
                                 });
@@ -385,6 +395,8 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
                             id: id,
                             firstname: firstname,
                             surname: surname,
+                            year: prize.year,
+                            category: prize.category,
                             motivation: "\""+motivation+"\"",
                             share: share
                         });
@@ -397,7 +409,7 @@ const addLaureats = (firstname, surname, motivation, share, year, category, call
         if (verif.length === 0) {
             return callback("Can't create laureates with these parameters (year or category invalid)", null);
         }
-        // savePrizes(result);
+        savePrizes(result);
         return callback(null, verif);
     }catch (e){
         console.log("error addLaureats");

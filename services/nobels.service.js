@@ -34,15 +34,6 @@ const listerNombreNobels = (callback) => {
 const listerCategory = () => {
     try {
         const prizes = lirePrizes();
-        // const result = [];
-        // prizes.forEach((prize) => {
-        //     if (prize.category) {
-        //         let tmp = result.find((c) => c === prize.category);
-        //         if (!tmp) {
-        //             result.push(prize.category);
-        //         }
-        //     }
-        // });
         const category = prizes.map((prize) => prize.category);
         return  [...new Set(category)];
     }catch (e) {
@@ -82,11 +73,13 @@ const listerCategoryNobelsMax = (callback) => {
                         nbLaureates: prize.laureates.length
                     });
                 } else {
+                    // this, add the nbLaureates of the same category in our result if the category is already in result
                     tmp.nbLaureates += prize.laureates.length;
                 }
             }
         });
         let max = result[0];
+        // this is to find the max nbLaureates and push the category in the result (with the nbLaureates)
         result.forEach((r) => {
             if (r.nbLaureates > max.nbLaureates) {
                 max = r;

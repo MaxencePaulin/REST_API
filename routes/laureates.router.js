@@ -137,7 +137,7 @@ router.post("/", addLaureates);
  * @swagger
  * /laureates:
  *   post:
- *      description: Add a new laureate to a given year and category data. (F15)
+ *      description: Add a new laureate to a given year and category data. (F15) (if laureate already exist for the same year and category it will be update)
  *      tags:
  *          - laureates
  *      parameters:
@@ -171,16 +171,6 @@ router.post("/", addLaureates);
  *            description: Category of the Nobel Prize
  *            required: true
  *            type: string
- *          - in: query
- *            name: page
- *            description: Number of the page
- *            required: false
- *            type: integer
- *          - in: query
- *            name: limit
- *            description: Limit of result per page
- *            required: false
- *            type: integer
  *      responses:
  *          '200':
  *              description: Resource updated successfully

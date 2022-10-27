@@ -60,7 +60,7 @@ router.get("/year", parAn);
  *      parameters:
  *          - in: query
  *            name: sort
- *            description: To sort the result
+ *            description: To sort the result (chose "laureates" for sort asc or "-laureates" for sort desc)
  *            required: false
  *            type: string
  *          - in: query

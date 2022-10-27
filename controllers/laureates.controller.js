@@ -1,6 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-// const datasource = process.env.DATASOURCE;
 const laureatesService = require("../services/laureates.service.js");
 const {pagination} = require("../utils/page");
 
@@ -97,10 +96,10 @@ exports.deleteLaureates = (req, res) => {
 }
 
 exports.editMotivationLaureates = (req, res) => {
-    const motivation = req.query.motivation;
-    const id = req.query.id;
-    const year = req.query.year;
-    const category = req.query.category;
+    const motivation = typeof req.query.motivation === "undefined" ? "" : req.query.motivation;
+    const id = typeof req.query.id === "undefined" ? "" : req.query.id;
+    const year = typeof req.query.year === "undefined" ? "" : req.query.year;
+    const category = typeof req.query.category === "undefined" ? "" : req.query.category;
     laureatesService.editMotivationLaureats(motivation, id, year, category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
@@ -111,13 +110,13 @@ exports.editMotivationLaureates = (req, res) => {
 }
 
 exports.addLaureates = (req, res) => {
-    const firstname = req.query.firstname;
-    const surname = req.query.surname;
-    const motivation = req.query.motivation;
+    const firstname = typeof req.query.firstname === "undefined" ? "" : req.query.firstname;
+    const surname =typeof req.query.surname === "undefined" ? "" : req.query.surname;
+    const motivation = typeof req.query.motivation === "undefined" ? "" : req.query.motivation;
     const share = req.query.share;
-    const year = req.query.year;
-    const category = req.query.category;
-    laureatesService.addLaureats(firstname, surname, motivation, share, 
+    const year = typeof req.query.year === "undefined" ? "" : req.query.year;
+    const category = typeof req.query.category === "undefined" ? "" : req.query.category;
+    laureatesService.addLaureats(firstname, surname, motivation, share,
             year, category, (error, results) => {
         if (error) {
             return res.status(400).send({ success: 0, data: error });
