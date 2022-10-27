@@ -142,20 +142,33 @@ const afficheNobelsInfo = (id, callback) => {
                         if (!tmp) {
                             result.push({
                                 id: laureate.id,
-                                name: [
+                                firstname: laureate.firstname,
+                                surname: laureate.surname,
+                                prizes: [
                                     {
-                                        firstname: laureate.firstname,
-                                        surname: laureate.surname,
-                                        prize: [prize.year+" "+prize.category+" "
-                                            +laureate.motivation.slice(1, laureate.motivation.length-1)],
-                                    }
+                                        year: prize.year,
+                                        category: prize.category,
+                                        motivation: laureate.motivation
+                                    },
+                                    //  (it was a test but i don't know if you agree with this)
+                                    // {
+                                    //     firstname: laureate.firstname,
+                                    //     surname: laureate.surname,
+                                    //     prize: [prize.year+" "+prize.category+" "
+                                    //         +laureate.motivation.slice(1, laureate.motivation.length-1)],
+                                    // }
                                 ],
-                                
+
                             });
                         } else {
                             // push le prize dans result
-                            tmp.name[0].prize.push(prize.year+" "+prize.category+" "
-                                +laureate.motivation.slice(1, laureate.motivation.length-1));
+                            tmp.prizes.push({
+                                year: prize.year,
+                                category: prize.category,
+                                motivation: laureate.motivation
+                            });
+                            // tmp.name[0].prize.push(prize.year+" "+prize.category+" "
+                            //     +laureate.motivation.slice(1, laureate.motivation.length-1));
                         }
                     }
                 });
