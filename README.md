@@ -18,11 +18,11 @@ Ce projet se base sur une base de donnée en JSON pour le moment, une version av
 
 ## du 13/10/2022 au 20/10/2022
 
-- correction multiples du codes et ajout de commentaire pour certaines fonction compliqué à vue d'oeil
+- correction multiples des codes et ajout de commentaire pour certaines fonctions compliqué à vue d'œil
 
 ## du 20/10/2022 au 26/10/2022
 
-- dernières vérifications, gestions d'erreurs, optimisations du code et dépot final
+- dernières vérifications, gestions d'erreurs, optimisations du code et dépôt final
 
 ## 27/10/2022
 
