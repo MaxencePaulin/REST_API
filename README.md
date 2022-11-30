@@ -1,5 +1,7 @@
 # REST_API (projet web)
 
+Ce projet se base sur une base de donnée en JSON pour le moment, une version avec PostgreSQL sera posté ultérieurement.
+
 ## <font color="red">**IMPORTANT** : ajouter un "PORT=xxxx" (en remplacant "xxxx" par le numéro d'un port) dans un nouveau fichier ".env" et executer "npm i" dans un terminal pour faire fonctionner le projet !</font>
 
 ## 29/09/2022
