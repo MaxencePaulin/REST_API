@@ -6,7 +6,7 @@ Ce projet se base sur une base de donnée en JSON pour le moment, une version av
 
 ## 29/09/2022
     
-- initialisation du github et du projet
+- initialisation du GitHub et du projet
 
 ## du 29/09/2022 au 06/10/2022
 
